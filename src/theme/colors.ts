@@ -103,4 +103,9 @@ export const colors = {
   matteWhite: "#F2F2F2",
   translucent: "rgba(238, 238, 238, 0.3)",
   black: "#0d0d0d",
+  status: {
+    lowBackground: "#3d44cd33",
+    highBackground: "#e0251b33",
+    normalBackground: "#3ac21b33"
+  }
 };

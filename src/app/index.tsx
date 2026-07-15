@@ -30,8 +30,10 @@ export default function Index() {
         activeOpacity={0.8}
       />
 
-      <LastMeasurementCard />
-      
+      <View style={styles.content}>
+        <LastMeasurementCard />
+      </View>
+
     </View>
   )
 }

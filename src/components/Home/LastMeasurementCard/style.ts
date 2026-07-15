@@ -3,10 +3,11 @@ import { colors } from "@/theme/colors";
 
 export const styles = StyleSheet.create({
   container: {
-
+    padding: 18,
+    gap: 12
   },
   header: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     flexDirection: 'row'
   },
@@ -26,5 +27,14 @@ export const styles = StyleSheet.create({
   subtitle: {
     color: colors.gray[600],
     paddingTop: 4
+  },
+  measure: {
+    color: colors.gray[600],
+    fontSize: 18
+  },
+  glucose: {
+    fontSize: 76,
+    color: colors.white,
+    fontWeight: 700
   }
 });

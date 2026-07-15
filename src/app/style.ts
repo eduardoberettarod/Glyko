@@ -4,5 +4,8 @@ import { colors } from "@/theme/colors";
 export const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
+  },
+  content: {
+    marginTop: 32
   }
 });

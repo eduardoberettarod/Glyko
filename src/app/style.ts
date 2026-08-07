@@ -1,11 +1,23 @@
 import { StyleSheet } from "react-native";
 import { colors } from "@/theme/colors";
+import { fonts } from "@/theme/fonts";
 
 export const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
   },
-  content: {
-    marginTop: 32
+  header: {
+    marginTop: 48
+  },
+  panel: {
+    marginTop: 48,
+    marginBottom: 48
+  },
+  panelText: {
+    color: colors.gray[500],
+    textTransform: 'uppercase',
+    fontFamily: fonts.hankenGrotesk.light,
+    fontSize: 14,
+    marginBottom: 12
   }
 });

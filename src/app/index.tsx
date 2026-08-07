@@ -5,34 +5,37 @@ import { colors } from '@/theme/colors'
 import { styles } from './style'
 
 //components
-import HomeHeader from '@/components/HomeHeader'
-import LastMeasurementCard from '@/components/Home/LastMeasurementCard'
+import Header from '@/components/Header'
+import HeaderSection from '@/components/HeaderSection';
+import MetricsPanel from '@/components/MetricsPanel';
+import Alert from '@/components/Alert';
 
-//utils
-import { getCurrentDate } from '@/utils/getCurrentDate'
 
 export default function Index() {
 
   const insets = useSafeAreaInsets()
 
-  const currentDate = getCurrentDate()
-
   return (
     <View style={[styles.container, { paddingTop: insets.top + 10 }]}>
-      <HomeHeader
-        data={{
-          name: 'Eduardo',
-          lastName: 'Beretta',
-          day: currentDate.day,
-          month: currentDate.month,
-          dayNumber: currentDate.dayNumber,
-        }}
-        activeOpacity={0.8}
-      />
+      <Header />
 
-      <View style={styles.content}>
-        <LastMeasurementCard />
+      <View style={styles.header}>
+        <HeaderSection
+          title={'Bom dia, Eduardo'}
+          subtitle={'Visão Geral'}
+        />
       </View>
+
+      <View style={styles.panel}>
+        <Text style={styles.panelText}>Painel de Métricas</Text>
+        <MetricsPanel />
+      </View>
+
+      <Alert
+        icon={'history'}
+        title={'Revisar Histórico'}
+        text={'Verifique as medições dos últimos 30 dias'}
+      />
 
     </View>
   )

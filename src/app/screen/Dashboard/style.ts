@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   header: {
-    marginTop: 48
+    marginTop: 32
   },
   panel: {
     marginTop: 48,

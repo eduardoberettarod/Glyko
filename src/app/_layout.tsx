@@ -10,6 +10,7 @@ import {
 } from "@expo-google-fonts/hanken-grotesk";
 
 import { colors } from "@/theme/colors";
+import TabBar from "@/components/TabBar";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -32,6 +33,7 @@ export default function Layout() {
           contentStyle: { backgroundColor: colors.black },
         }}
       />
+      <TabBar />
     </View>
   );
 }

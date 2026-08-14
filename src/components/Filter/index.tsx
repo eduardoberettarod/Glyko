@@ -1,22 +1,50 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Pressable, View, Text } from 'react-native'
+import React, { useState } from 'react'
 import { styles } from './style';
 
+type FilterType = 'normal' | 'high' | 'low';
+
 export default function Filter() {
+  const [selectedFilter, setSelectedFilter] = useState<FilterType | null>(null);
+
+  const handleFilter = (filter: FilterType) => {
+    setSelectedFilter(
+      selectedFilter === filter ? null : filter
+    );
+  };
+
   return (
     <View style={styles.container}>
 
-      <View style={styles.left}>
+      <Pressable
+        style={[
+          styles.left,
+          selectedFilter === 'normal' && styles.selected
+        ]}
+        onPress={() => handleFilter('normal')}
+      >
         <Text style={styles.normal}>Normal</Text>
-      </View>
+      </Pressable>
 
-      <View style={styles.middle}>
+      <Pressable
+        style={[
+          styles.middle,
+          selectedFilter === 'high' && styles.selected
+        ]}
+        onPress={() => handleFilter('high')}
+      >
         <Text style={styles.high}>Alta</Text>
-      </View>
+      </Pressable>
 
-      <View style={styles.right}>
+      <Pressable
+        style={[
+          styles.right,
+          selectedFilter === 'low' && styles.selected
+        ]}
+        onPress={() => handleFilter('low')}
+      >
         <Text style={styles.low}>Baixa</Text>
-      </View>
+      </Pressable>
 
     </View>
   )

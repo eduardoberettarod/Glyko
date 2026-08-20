@@ -23,7 +23,10 @@ export default function Filter() {
         ]}
         onPress={() => handleFilter('normal')}
       >
-        <Text style={styles.normal}>Normal</Text>
+        <Text style={[
+          styles.normal,
+          selectedFilter === 'normal' && styles.selectedText
+        ]}>Normal</Text>
       </Pressable>
 
       <Pressable
@@ -33,7 +36,10 @@ export default function Filter() {
         ]}
         onPress={() => handleFilter('high')}
       >
-        <Text style={styles.high}>Alta</Text>
+        <Text style={[
+          styles.normal,
+          selectedFilter === 'high' && styles.selectedText
+        ]}>Alta</Text>
       </Pressable>
 
       <Pressable
@@ -43,7 +49,10 @@ export default function Filter() {
         ]}
         onPress={() => handleFilter('low')}
       >
-        <Text style={styles.low}>Baixa</Text>
+        <Text style={[
+          styles.normal,
+          selectedFilter === 'low' && styles.selectedText
+        ]}>Baixa</Text>
       </Pressable>
 
     </View>

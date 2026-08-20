@@ -12,7 +12,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 18,
     alignItems: 'center',
     gap: 12,
-    borderRadius: 222
+    borderRadius: 222,
+    backgroundColor: colors.onyx
   },
   icon: {
     width: 50,

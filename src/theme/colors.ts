@@ -29,7 +29,7 @@ export const colors = {
     300: "#97f189",
     400: "#6be957",
     500: "#4AE124",
-    600: "#3bc21b",
+    600: "#49b350",
     700: "#2fa314",
     800: "#22830e",
     900: "#176409",
@@ -181,6 +181,6 @@ export const colors = {
 
   white: "#f3f7f3",
   translucent: "rgba(238, 238, 238, 0.3)",
-  black: "#0d0d0d",
+  black: "#070D09",
   onyx: "#111111"
 };

@@ -3,18 +3,24 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
     overflow: 'hidden',
-    bottom: 80,
     borderRadius: 100,
     borderWidth: 1,
     borderColor: colors.gray[700],
-    left: '50%',
-    transform: [{translateX: '-50%'}]
   },
   blur: {
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     flexDirection: 'row',
-    gap: 12,
+    gap: 6,
+  },
+  tabBar: {
+    position: 'absolute',
+    bottom: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    left: '50%',
+    transform: [{translateX: '-50%'}],
+    gap: 14
   }
 });

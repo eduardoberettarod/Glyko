@@ -3,6 +3,10 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   container: {
+    bottom: 50,
+    left: '50%',
+    transform: [{translateX: '-50%'}],
+    position: 'absolute',
     overflow: 'hidden',
     borderRadius: 100,
     borderWidth: 1,
@@ -14,13 +18,4 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 6,
   },
-  tabBar: {
-    position: 'absolute',
-    bottom: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    left: '50%',
-    transform: [{translateX: '-50%'}],
-    gap: 14
-  }
 });

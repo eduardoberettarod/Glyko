@@ -65,7 +65,7 @@ export default function Profile() {
         styles.container,
         {
           paddingTop: insets.top,
-          paddingBottom: insets.bottom + 120,
+          paddingBottom: insets.bottom + 170,
         },
       ]}
 
@@ -86,7 +86,7 @@ export default function Profile() {
       }
 
       ListFooterComponent={
-        <View style={{ marginTop: 24 }}>
+        <View style={{ marginTop: 32 }}>
           <Button
             title="SAIR"
             borderColor={colors.gray[700]}

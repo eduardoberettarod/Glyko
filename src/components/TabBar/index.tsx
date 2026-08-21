@@ -22,7 +22,7 @@ export default function TabBar() {
     : tabs.find((tab) => tab.route === pathname)?.name ?? 'house'
 
   return (
-    <View style={styles.tabBar}>
+    <View>
 
       <View style={styles.container}>
         <BlurView style={styles.blur} tint={'dark'} intensity={100}>

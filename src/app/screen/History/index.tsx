@@ -3,12 +3,11 @@ import { View, Text } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './style';
 
-
+//components
 import HeaderSection from '@/components/HeaderSection';
 import Filter from '@/components/Filter'
 import Card from '@/components/Card';
-import { colors } from '@/theme/colors';
-import { fonts } from '@/theme/fonts';
+import Scroll from '@/components/Scroll';
 
 
 export default function History() {
@@ -16,7 +15,7 @@ export default function History() {
   const insets = useSafeAreaInsets()
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <Scroll style={styles.container}>
 
       <View style={styles.header}>
         <HeaderSection
@@ -26,13 +25,15 @@ export default function History() {
         />
       </View>
 
+      
+
       <View style={styles.filter}>
         <Filter />
       </View>
 
       <View style={{ gap: 12, marginTop: 24 }}>
 
-        <Text style={{color: colors.white, fontFamily: fonts.hankenGrotesk.medium, textTransform: 'uppercase' }}>Hoje, Agosto 19</Text>
+        <Text style={styles.label}>Hoje, Agosto 19</Text>
         <Card
           level={'low'}
         />
@@ -44,6 +45,6 @@ export default function History() {
         />
       </View>
 
-    </View>
+    </Scroll>
   )
 }

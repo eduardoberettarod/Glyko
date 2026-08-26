@@ -19,5 +19,20 @@ export const styles = StyleSheet.create({
     fontFamily: fonts.hankenGrotesk.light,
     fontSize: 14,
     marginBottom: 12
+  },
+  label: {
+    color: colors.gray[400],
+    textTransform: 'uppercase',
+    fontFamily: fonts.hankenGrotesk.medium
+
+  },
+  textChartContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12
+  },
+  chart: {
+    marginTop: 24
   }
 });

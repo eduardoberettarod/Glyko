@@ -1,3 +1,5 @@
+import { colors } from '@/theme/colors';
+import { fonts } from '@/theme/fonts';
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -8,6 +10,11 @@ export const styles = StyleSheet.create({
     marginTop: 32
   },
   filter: {
-    
+    marginTop: 24
+  },
+  label: {
+    color: colors.gray[400],
+    textTransform: 'uppercase',
+    fontFamily: fonts.hankenGrotesk.medium
   }
-});
+})

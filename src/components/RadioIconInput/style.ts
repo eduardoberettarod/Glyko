@@ -27,11 +27,11 @@ export const styles = StyleSheet.create({
     color: colors.gray[400] ?? '#9CA3AF',
   },
   labelSelected: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
 });
 
 export const iconColor = {
-  default: '#FFFFFF',
+  default: colors.gray[400],
   selected: colors.onyx,
 };

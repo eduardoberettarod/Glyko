@@ -8,6 +8,7 @@ import HeaderSection from '@/components/HeaderSection';
 import Filter from '@/components/Filter'
 import Card from '@/components/Card';
 import Scroll from '@/components/Scroll';
+import LineChart from '@/components/LIneChart';
 
 
 export default function History() {
@@ -25,7 +26,11 @@ export default function History() {
         />
       </View>
 
-      
+      <View>
+        <LineChart
+          period={'7d'}
+        />
+      </View>
 
       <View style={styles.filter}>
         <Filter />

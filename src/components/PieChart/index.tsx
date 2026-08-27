@@ -14,6 +14,9 @@ interface PieChartProps {
   measurements?: GlucoseMeasurement[]
 }
 
+// Duração (em ms) da animação de entrada do gráfico.
+const ANIMATION_DURATION = 1000
+
 const statusConfig = [
   { status: 'normal' as const, label: 'Normais', color: colors.green[600] },
   { status: 'alta' as const, label: 'Altas', color: colors.red[500] },
@@ -26,10 +29,23 @@ const exampleMeasurements: GlucoseMeasurement[] = [
   ...Array.from({ length: 3 }, () => ({ status: 'alta' as const })),
 ]
 
-export default function PieChart({ measurements = exampleMeasurements }: PieChartProps) {
+// Junta cada status (normal/alta/baixa) com sua contagem e percentual
+// dentro do total de medições, descartando os status sem nenhuma ocorrência.
+function buildChartData(measurements: GlucoseMeasurement[]) {
   const total = measurements.length
 
-  if (total === 0) {
+  return statusConfig
+    .map((item) => {
+      const value = measurements.filter((measurement) => measurement.status === item.status).length
+      const percentage = Math.round((value / total) * 100)
+
+      return { ...item, value, text: `${percentage}%`, percentage }
+    })
+    .filter((item) => item.value > 0)
+}
+
+export default function PieChart({ measurements = exampleMeasurements }: PieChartProps) {
+  if (measurements.length === 0) {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>Nenhuma medição disponível</Text>
@@ -37,27 +53,15 @@ export default function PieChart({ measurements = exampleMeasurements }: PieChar
     )
   }
 
-  const chartData = statusConfig
-    .map((item) => {
-      const value = measurements.filter((measurement) => measurement.status === item.status).length
-      const percentage = Math.round((value / total) * 100)
-
-      return {
-        ...item,
-        value,
-        text: `${percentage}%`,
-        percentage,
-      }
-    })
-    .filter((item) => item.value > 0)
+  const chartData = buildChartData(measurements)
 
   return (
     <View style={styles.container}>
       <GiftedPieChart
         data={chartData}
         donut
-        animationDuration={1}
         isAnimated
+        animationDuration={ANIMATION_DURATION}
         radius={100}
         innerRadius={50}
         innerCircleColor={colors.onyx}

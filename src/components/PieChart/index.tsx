@@ -1,6 +1,7 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Text, View } from 'react-native'
+import React, { useEffect } from 'react'
 import { PieChart as GiftedPieChart } from 'react-native-gifted-charts'
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { colors } from '@/theme/colors'
 import { styles } from './style'
 
@@ -14,8 +15,11 @@ interface PieChartProps {
   measurements?: GlucoseMeasurement[]
 }
 
-// Duração (em ms) da animação de entrada do gráfico.
-const ANIMATION_DURATION = 1000
+// A versão gratuita da lib (react-native-gifted-charts) não anima as fatias
+// do PieChart/DonutChart de fato — `isAnimated`/`animationDuration` só têm
+// efeito no PieChart "Pro" (pago). Por isso animamos a entrada do card
+// inteiro (fade + leve escala) com Reanimated em vez de depender da lib.
+const ENTRANCE_DURATION = 500
 
 const statusConfig = [
   { status: 'normal' as const, label: 'Normais', color: colors.green[600] },
@@ -44,24 +48,38 @@ function buildChartData(measurements: GlucoseMeasurement[]) {
     .filter((item) => item.value > 0)
 }
 
+// Toca o fade + escala assim que o card monta na tela.
+function useEntranceAnimation() {
+  const progress = useSharedValue(0)
+
+  useEffect(() => {
+    progress.value = withTiming(1, { duration: ENTRANCE_DURATION, easing: Easing.out(Easing.quad) })
+  }, [progress])
+
+  return useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ scale: 0.9 + progress.value * 0.1 }],
+  }))
+}
+
 export default function PieChart({ measurements = exampleMeasurements }: PieChartProps) {
+  const entranceStyle = useEntranceAnimation()
+
   if (measurements.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
+      <Animated.View style={[styles.emptyContainer, entranceStyle]}>
         <Text style={styles.emptyText}>Nenhuma medição disponível</Text>
-      </View>
+      </Animated.View>
     )
   }
 
   const chartData = buildChartData(measurements)
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, entranceStyle]}>
       <GiftedPieChart
         data={chartData}
         donut
-        isAnimated
-        animationDuration={ANIMATION_DURATION}
         radius={100}
         innerRadius={50}
         innerCircleColor={colors.onyx}
@@ -79,6 +97,6 @@ export default function PieChart({ measurements = exampleMeasurements }: PieChar
           </View>
         ))}
       </View>
-    </View>
+    </Animated.View>
   )
 }

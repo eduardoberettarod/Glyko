@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
   },
 
   selectedItemContainer: {
-    backgroundColor: 'transparent',
+    backgroundColor: colors.emerald[500],
     paddingVertical: 12,
     paddingHorizontal: 16,
     minHeight: 52,

@@ -25,6 +25,7 @@ export default function Scroll({ children, style = {}, nav = false }: Props) {
       <KeyboardAwareScrollView
         bottomOffset={30}
         keyboardShouldPersistTaps="handled"
+        nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           { flex: 0, flexGrow: 1, paddingTop: insets.top + 10, paddingBottom }

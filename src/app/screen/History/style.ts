@@ -16,5 +16,9 @@ export const styles = StyleSheet.create({
     color: colors.gray[400],
     textTransform: 'uppercase',
     fontFamily: fonts.hankenGrotesk.medium
+  },
+  chart: {
+    gap: 12,
+    marginTop: 24
   }
 })

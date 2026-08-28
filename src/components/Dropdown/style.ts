@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.onyx,
     borderRadius: 16,
     overflow: 'hidden',
-    marginTop: 8,
+    maxHeight: 500
   },
 
   listItemContainer: {

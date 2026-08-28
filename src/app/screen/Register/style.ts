@@ -17,12 +17,21 @@ export const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 24
-
+    
   },
   observation: {
     marginTop: 48
   },
   contextMedication: {
+    marginTop: 24
     
+  },
+  NumericInput: {
+    marginTop: 48
+    
+  },
+  DateTimeInput: {
+    marginTop: 24
+
   }
 });

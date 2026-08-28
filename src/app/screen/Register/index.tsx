@@ -10,6 +10,8 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Dropdown from '@/components/Dropdown';
 import { styles as dropdownStyles } from '@/components/Dropdown/style';
+import { DateTimeInput } from '@/components/DateTimeInput';
+import { NumericInput } from '@/components/NumericInput';
 
 export default function Register() {
 
@@ -22,6 +24,9 @@ export default function Register() {
     | 'after_exercise';
 
   const [measurementContext, setMeasurementContext] = useState<MeasurementContext>('fasting');
+  const [birthDate, setBirthDate] = useState<Date>(new Date());
+  const [preferredTime, setPreferredTime] = useState<Date>(new Date());
+  const [glicemia, setGlicemia] = useState('');
 
   const measurementContexts: { label: string; value: MeasurementContext }[] = [
     {
@@ -55,8 +60,36 @@ export default function Register() {
       setMeasurementContext(value);
     }
   };
+
+
   return (
     <Scroll style={styles.container}>
+
+      <View style={styles.NumericInput}>
+        <NumericInput
+          label="Glicemia (mg/dL)"
+          value={glicemia}
+          onChange={setGlicemia}
+          placeholder="0"
+        />
+      </View>
+
+      <View style={styles.DateTimeInput}>
+        <DateTimeInput
+          mode="date"
+          label="Data de nascimento"
+          value={birthDate}
+          onChange={setBirthDate}
+          maximumDate={new Date()}
+        />
+
+        <DateTimeInput
+          mode="time"
+          label="Horário preferido"
+          value={preferredTime}
+          onChange={setPreferredTime}
+        />
+      </View>
 
       <View style={styles.contextMedication}>
         <Text style={styles.label}>Contexto da medição</Text>

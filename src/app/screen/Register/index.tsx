@@ -12,6 +12,7 @@ import Dropdown from '@/components/Dropdown';
 import { styles as dropdownStyles } from '@/components/Dropdown/style';
 import { DateTimeInput } from '@/components/DateTimeInput';
 import { NumericInput } from '@/components/NumericInput';
+import ReturnPage from '@/components/ReturnPage';
 
 export default function Register() {
 
@@ -64,6 +65,12 @@ export default function Register() {
 
   return (
     <Scroll style={styles.container}>
+
+      <View>
+        <ReturnPage 
+        title={'Nova Medição'}
+        />
+      </View>
 
       <View style={styles.NumericInput}>
         <NumericInput

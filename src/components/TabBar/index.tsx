@@ -17,13 +17,15 @@ export default function TabBar() {
   const router = useRouter()
 
   const isRegisterPage = pathname === '/screen/Register'
-  const activeTab = isRegisterPage
-    ? null
-    : tabs.find((tab) => tab.route === pathname)?.name ?? 'house'
+
+  if (isRegisterPage) {
+    return null
+  }
+
+  const activeTab = tabs.find((tab) => tab.route === pathname)?.name ?? 'house'
 
   return (
     <View>
-
       <View style={styles.container}>
         <BlurView style={styles.blur} tint={'dark'} intensity={100}>
           {tabs.map((tab) => (

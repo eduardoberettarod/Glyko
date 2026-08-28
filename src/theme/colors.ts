@@ -180,7 +180,7 @@ export const colors = {
   },
 
   white: "#f3f7f3",
-  translucent: "rgba(238, 238, 238, 0.3)",
+  translucent: "rgba(238, 238, 238, 0.5)",
   black: "#070D09",
   onyx: "#111111"
 };

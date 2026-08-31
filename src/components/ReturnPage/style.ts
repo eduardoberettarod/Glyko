@@ -2,15 +2,21 @@ import { StyleSheet } from "react-native";
 import { colors } from "@/theme/colors";
 import { fonts } from "@/theme/fonts";
 
+const BUTTON_SIZE = 56;
+
 export const styles = StyleSheet.create({
   container: {
-    textAlign: 'center',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 56,
   },
+
   button: {
+    width: BUTTON_SIZE,
+    height: BUTTON_SIZE,
     overflow: 'hidden',
-    borderRadius: 50,
+    borderRadius: BUTTON_SIZE / 2,
     borderWidth: 1,
     borderColor: colors.white,
     shadowColor: colors.translucent,
@@ -19,20 +25,23 @@ export const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 6,
   },
+
   blur: {
-    padding: 14,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
 
+  spacer: {
+    width: BUTTON_SIZE,
   },
-  left: {
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
+
   text: {
+    flex: 1,
+    textAlign: 'center',
     color: colors.white,
     fontFamily: fonts.hankenGrotesk.bold,
     fontSize: 20,
     textTransform: 'uppercase',
-  }
+  },
 });

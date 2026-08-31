@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   },
   underline: {
     alignSelf: 'center',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     borderBottomColor: colors.gray[700],
     paddingBottom: 8,
   },
@@ -28,8 +28,8 @@ export const styles = StyleSheet.create({
   },
   input: {
     padding: 0,
-    height: 88,
-    fontSize: 72,
+    height: 106,
+    fontSize: 100,
     fontWeight: '700',
     color: colors.white,
     textAlign: 'center',

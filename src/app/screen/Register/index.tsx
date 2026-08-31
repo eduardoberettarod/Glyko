@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { styles } from './style';
 import { colors } from '@/theme/colors';
 
 //components
 import { MoodSelector } from '@/components/MoodSelector';
-import Scroll from '@/components/Scroll';
+// import Scroll from '@/components/Scroll';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Dropdown from '@/components/Dropdown';
@@ -13,9 +13,13 @@ import { styles as dropdownStyles } from '@/components/Dropdown/style';
 import { DateTimeInput } from '@/components/DateTimeInput';
 import { NumericInput } from '@/components/NumericInput';
 import ReturnPage from '@/components/ReturnPage';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Register() {
 
+  const insets = useSafeAreaInsets()
+  const MARGIN_TOP = 30
+  const MARGIN_BOTTOM = 40
   type MeasurementContext =
     | 'fasting'
     | 'before_meal'
@@ -64,11 +68,19 @@ export default function Register() {
 
 
   return (
-    <Scroll style={styles.container}>
+    <ScrollView
+      contentContainerStyle={[
+        styles.container,
+        {
+          paddingTop: insets.top + MARGIN_TOP,
+          paddingBottom: insets.bottom + MARGIN_BOTTOM
+        }
+      ]}
+    >
 
       <View>
-        <ReturnPage 
-        title={'Nova Medição'}
+        <ReturnPage
+          title={'Nova Medição'}
         />
       </View>
 
@@ -134,6 +146,6 @@ export default function Register() {
         />
       </View>
 
-    </Scroll>
+    </ScrollView>
   )
 }

@@ -13,7 +13,7 @@ type NumericInputProps = {
 };
 
 // largura aproximada de um dígito no tamanho de fonte usado (72px, bold)
-const DIGIT_WIDTH = 46;
+const DIGIT_WIDTH = 56;
 const DEFAULT_MAX_LENGTH = 3;
 
 export function NumericInput({

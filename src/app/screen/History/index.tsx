@@ -30,7 +30,7 @@ export default function History() {
   const insets = useSafeAreaInsets();
 
   const [period, setPeriod] = useState<Period>('7d');
-
+  const [levelFilter, setLevelFilter] = useState<Measurement['level'] | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   // Dados temporários
@@ -94,6 +94,10 @@ export default function History() {
     );
   };
 
+  const filteredMeasurements = levelFilter
+    ? measurements.filter(item => item.level === levelFilter)
+    : measurements;
+
   return (
     <Scroll
       style={styles.container}
@@ -137,7 +141,7 @@ export default function History() {
       </View>
 
       <View style={styles.filter}>
-        <Filter />
+        <Filter value={levelFilter} onChange={setLevelFilter} />
       </View>
 
       <View style={{ gap: 12, marginTop: 24 }}>
@@ -146,7 +150,7 @@ export default function History() {
           Hoje, Agosto 19
         </Text>
 
-        {measurements.map(item => (
+        {filteredMeasurements.map(item => (
           <Card
             key={item.id}
             level={item.level}

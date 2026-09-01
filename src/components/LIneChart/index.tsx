@@ -44,6 +44,19 @@ function getEdgeSpacing(labels: string[]) {
   return Math.ceil((longestLabelLength * AXIS_LABEL_CHAR_WIDTH_ESTIMATE) / 2) + EDGE_SPACING_EXTRA_MARGIN
 }
 
+// Converte uma cor hex do tema (#rrggbb) para rgba, usada para deixar as
+// linhas de referência (máx/média/mín) mais suaves e transparentes sobre o
+// gráfico, sem precisar de uma prop de opacidade (a lib não expõe uma).
+function withOpacity(hexColor: string, alpha: number) {
+  const hex = hexColor.replace('#', '')
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+const REFERENCE_LINE_OPACITY = 0.5
+
 const exampleDataByPeriod: Record<ChartPeriod, GlucoseTrendPoint[]> = {
   '6m': [
     { value: 55, label: 'Jan' },
@@ -91,6 +104,13 @@ export default function LineChart({ data, period = '6m' }: LineChartProps) {
     label: point.label,
   }))
 
+  const values = points.map((point) => point.value)
+  const maxValue = Math.max(...values)
+  const minValue = Math.min(...values)
+  const averageValue = Math.round(
+    values.reduce((sum, value) => sum + value, 0) / values.length
+  )
+
   // Margem reservada nas duas pontas do gráfico para o texto dos rótulos
   // (centralizados em cada ponto) caber inteiro dentro da área visível.
   const edgeSpacing = getEdgeSpacing(points.map((point) => point.label))
@@ -105,6 +125,27 @@ export default function LineChart({ data, period = '6m' }: LineChartProps) {
 
   return (
     <View style={styles.container}>
+
+      <View style={styles.statsRow}>
+        <View style={styles.statItem}>
+          <View style={[styles.statDot, styles.statDotHigh]} />
+          <Text style={styles.statLabel}>Máxima</Text>
+          <Text style={styles.statValue}>{maxValue}</Text>
+        </View>
+
+        <View style={styles.statItem}>
+          <View style={[styles.statDot, styles.statDotAverage]} />
+          <Text style={styles.statLabel}>Média</Text>
+          <Text style={styles.statValue}>{averageValue}</Text>
+        </View>
+
+        <View style={styles.statItem}>
+          <View style={[styles.statDot, styles.statDotLow]} />
+          <Text style={styles.statLabel}>Mínima</Text>
+          <Text style={styles.statValue}>{minValue}</Text>
+        </View>
+      </View>
+
       <View style={styles.chartArea} onLayout={handleChartAreaLayout}>
         {chartWidth > 0 && (
           <GiftedLineChart
@@ -135,9 +176,32 @@ export default function LineChart({ data, period = '6m' }: LineChartProps) {
             hideYAxisText
             yAxisLabelWidth={0}
             noOfSections={2}
-            rulesColor={colors.gray[800]}
-            rulesThickness={1}
+            rulesThickness={0}
             xAxisLabelTextStyle={styles.axisLabel}
+            showReferenceLine1
+            referenceLine1Position={maxValue}
+            referenceLine1Config={{
+              color: withOpacity(colors.red[500], REFERENCE_LINE_OPACITY),
+              dashWidth: 4,
+              dashGap: 4,
+              thickness: 1,
+            }}
+            showReferenceLine2
+            referenceLine2Position={averageValue}
+            referenceLine2Config={{
+              color: withOpacity(colors.gray[400], REFERENCE_LINE_OPACITY),
+              dashWidth: 4,
+              dashGap: 4,
+              thickness: 1,
+            }}
+            showReferenceLine3
+            referenceLine3Position={minValue}
+            referenceLine3Config={{
+              color: withOpacity(colors.sky[600], REFERENCE_LINE_OPACITY),
+              dashWidth: 4,
+              dashGap: 4,
+              thickness: 1,
+            }}
           />
         )}
       </View>

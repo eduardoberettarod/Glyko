@@ -1,58 +1,43 @@
+// src/components/Filter/index.tsx
 import { Pressable, View, Text } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { styles } from './style';
 
-type FilterType = 'normal' | 'high' | 'low';
+export type FilterType = 'normal' | 'high' | 'low';
 
-export default function Filter() {
-  const [selectedFilter, setSelectedFilter] = useState<FilterType | null>(null);
+type Props = {
+  value: FilterType | null;
+  onChange: (filter: FilterType | null) => void;
+};
+
+export default function Filter({ value, onChange }: Props) {
 
   const handleFilter = (filter: FilterType) => {
-    setSelectedFilter(
-      selectedFilter === filter ? null : filter
-    );
+    onChange(value === filter ? null : filter);
   };
 
   return (
     <View style={styles.container}>
 
       <Pressable
-        style={[
-          styles.left,
-          selectedFilter === 'normal' && styles.selected
-        ]}
+        style={[styles.left, value === 'normal' && styles.selected]}
         onPress={() => handleFilter('normal')}
       >
-        <Text style={[
-          styles.normal,
-          selectedFilter === 'normal' && styles.selectedText
-        ]}>Normal</Text>
+        <Text style={[styles.normal, value === 'normal' && styles.selectedText]}>Normal</Text>
       </Pressable>
 
       <Pressable
-        style={[
-          styles.middle,
-          selectedFilter === 'high' && styles.selected
-        ]}
+        style={[styles.middle, value === 'high' && styles.selected]}
         onPress={() => handleFilter('high')}
       >
-        <Text style={[
-          styles.normal,
-          selectedFilter === 'high' && styles.selectedText
-        ]}>Alta</Text>
+        <Text style={[styles.normal, value === 'high' && styles.selectedText]}>Alta</Text>
       </Pressable>
 
       <Pressable
-        style={[
-          styles.right,
-          selectedFilter === 'low' && styles.selected
-        ]}
+        style={[styles.right, value === 'low' && styles.selected]}
         onPress={() => handleFilter('low')}
       >
-        <Text style={[
-          styles.normal,
-          selectedFilter === 'low' && styles.selectedText
-        ]}>Baixa</Text>
+        <Text style={[styles.normal, value === 'low' && styles.selectedText]}>Baixa</Text>
       </Pressable>
 
     </View>

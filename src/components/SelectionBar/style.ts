@@ -17,6 +17,11 @@ export const styles = StyleSheet.create({
     borderRadius: 24,
     zIndex: 2,
     borderBottomWidth: 1,
+    shadowColor: colors.white,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    elevation: 6,
   },
 
   button: {

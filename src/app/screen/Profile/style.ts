@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
   header: {
     marginTop: 32,
     alignItems: 'center',
+    marginBottom: 24
   },
   user: {
     fontFamily: fonts.hankenGrotesk.medium,

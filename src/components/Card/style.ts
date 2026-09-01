@@ -62,5 +62,13 @@ export const styles = StyleSheet.create({
     fontFamily: fonts.hankenGrotesk.medium,
     fontSize: 11,
     textTransform: 'uppercase'
-  }
+  },
+  selectedContainer: {
+  borderColor: colors.emerald[500],
+  borderWidth: 1.5,
+},
+
+selectedIcon: {
+  backgroundColor: colors.emerald[500],
+},
 });

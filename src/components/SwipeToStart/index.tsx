@@ -7,6 +7,11 @@ import {
   GestureDetector,
 } from 'react-native-gesture-handler';
 
+import {
+  MaterialCommunityIcons,
+  EvilIcons,
+} from '@expo/vector-icons';
+
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -14,70 +19,65 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 
+import { BlurView } from 'expo-blur';
+
 import { styles } from './style';
+import { colors } from '@/theme/colors';
 
 interface SwipeToStartProps {
   onComplete?: () => void;
 }
 
+const BUTTON_SIZE = 60;
+const PADDING = 6;
+
 export default function SwipeToStart({
   onComplete,
 }: SwipeToStartProps) {
 
-  const translateX = useSharedValue(0);
+  const growth = useSharedValue(0);
   const containerWidth = useSharedValue(0);
-
-  const BUTTON_SIZE = 52;
-  const PADDING = 6;
 
   const gesture = Gesture.Pan()
 
     .onUpdate((event) => {
 
-      const maxTranslate =
+      const maxGrowth =
         containerWidth.value -
         BUTTON_SIZE -
         PADDING * 2;
 
-      translateX.value = Math.max(
+      growth.value = Math.max(
         0,
-        Math.min(
-          event.translationX,
-          maxTranslate
-        )
+        Math.min(event.translationX, maxGrowth)
       );
 
     })
 
     .onEnd(() => {
 
-      const maxTranslate =
+      const maxGrowth =
         containerWidth.value -
         BUTTON_SIZE -
         PADDING * 2;
 
-      const threshold = maxTranslate * 0.9;
+      const threshold = maxGrowth * 0.9;
 
-      if (translateX.value >= threshold) {
+      if (growth.value >= threshold) {
 
-        translateX.value = maxTranslate;
+        growth.value = withSpring(maxGrowth);
 
         runOnJS(console.log)('funcionou');
 
       } else {
 
-        translateX.value = withSpring(0);
-
+        growth.value = withSpring(0);
       }
 
     });
 
   const animatedButtonStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        translateX: translateX.value,
-      },
-    ],
+    width: BUTTON_SIZE + growth.value,
   }));
 
   return (
@@ -89,9 +89,22 @@ export default function SwipeToStart({
       }}
     >
 
+      <BlurView
+        intensity={80}
+        tint="dark"
+        style={styles.blur}
+        pointerEvents="none"
+      />
+
       <Text style={styles.title}>
-        Deslize para começar
+        Começar
       </Text>
+
+      <View style={styles.icon}>
+        <EvilIcons name="chevron-right" size={16} color={colors.gray[500]} />
+        <EvilIcons name="chevron-right" size={20} color={colors.gray[300]} />
+        <EvilIcons name="chevron-right" size={24} color={colors.gray[100]} />
+      </View>
 
       <GestureDetector gesture={gesture}>
         <Animated.View
@@ -100,9 +113,13 @@ export default function SwipeToStart({
             animatedButtonStyle,
           ]}
         >
-          <Text style={styles.arrow}>
-            →
-          </Text>
+          <View style={styles.arrow}>
+            <MaterialCommunityIcons
+              name="arrow-right"
+              size={24}
+              color={colors.onyx}
+            />
+          </View>
         </Animated.View>
       </GestureDetector>
 

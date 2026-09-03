@@ -7,6 +7,8 @@ import BackButton from '@/components/BackButton';
 
 export default function Index() {
 
+  return <Redirect href="/screen/Dashboard" />;
+
   useEffect(() => {
     const subscription = BackHandler.addEventListener(
       'hardwareBackPress',

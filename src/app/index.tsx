@@ -1,33 +1,36 @@
-import { View, Text, TouchableOpacity, BackHandler } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useEffect } from 'react'
-import { Redirect } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { colors } from '@/theme/colors';
-import SwipeToStart from '@/components/SwipeToStart';
-import BackButton from '@/components/BackButton';
+import { styles } from './style';
+import Button from '@/components/Button';
 
 export default function Index() {
 
-  return <Redirect href="/screen/Dashboard" />;
+  const router = useRouter();
 
-  useEffect(() => {
-    const subscription = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        // retorna true = "eu tratei o back, não faça nada"
-        // (nem fecha o app, nem navega)
-        return true;
-      }
-    );
-
-    return () => subscription.remove();
-  }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 18 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        <BackButton />
-        <SwipeToStart />
+    <View style={[styles.container, ]}>
+
+
+      <View style={styles.footer}>
+
+        <Button
+          title={'Login'}
+          borderColor={colors.emerald[500]}
+          color={colors.emerald[500]}
+          onPress={() => router.push('/screen/Dashboard')}
+        />
+
+        <Button
+          title={'Criar conta'}
+          borderColor={colors.gray[700]}
+          colorText={colors.gray[700]}
+        />
+
       </View>
+
     </View>
   )
 }

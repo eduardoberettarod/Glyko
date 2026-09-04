@@ -7,7 +7,11 @@ import { BlurView } from 'expo-blur';
 
 export default function BackButton({ ...rest }: TouchableOpacityProps) {
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity
+      style={styles.button}
+      activeOpacity={0.8}
+      {...rest}
+    >
       <BlurView
         style={styles.blur}
         tint={'dark'}

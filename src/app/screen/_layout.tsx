@@ -11,6 +11,7 @@ import {
 
 import { colors } from "@/theme/colors";
 import TabBar from "@/components/TabBar";
+import { StatusBar } from "expo-status-bar";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -33,6 +34,7 @@ export default function Layout() {
               contentStyle: { backgroundColor: colors.black },
             }}
           />
+          <StatusBar hidden />
           <TabBar />
         </View>
   );

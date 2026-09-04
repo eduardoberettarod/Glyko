@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StatusBar } from 'expo-status-bar';
 
 export default function RootLayout() {
   return (
@@ -14,6 +15,7 @@ export default function RootLayout() {
             contentStyle: { backgroundColor: colors.black }
           }}
           />
+          <StatusBar hidden />
         </GestureHandlerRootView>
       </KeyboardProvider>
     </SafeAreaProvider>

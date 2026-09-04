@@ -8,6 +8,7 @@ import Button from '@/components/Button';
 import { colors } from '@/theme/colors';
 import CardProfile from '@/components/CardProfile';
 import Separator from '@/components/Separator';
+import { router } from 'expo-router';
 
 type DataItem = {
   icon: 'bell' | 'ruler' | 'export' | 'star' | 'info';
@@ -91,6 +92,7 @@ export default function Profile() {
             title="SAIR"
             borderColor={colors.gray[700]}
             colorText={colors.red[400]}
+            onPress={() => router.push('/')}
           />
         </View>
       }

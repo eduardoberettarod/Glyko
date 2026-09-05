@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'expo-router';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
@@ -52,6 +52,7 @@ export default function Index() {
             title={'Criar conta'}
             borderColor={colors.emerald[500]}
             color={colors.emerald[500]}
+            onPress={() => router.push('/RegisterPerson')}
           />
 
           <Button

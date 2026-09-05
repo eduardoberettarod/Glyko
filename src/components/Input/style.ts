@@ -16,11 +16,13 @@ export const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: colors.gray[400],
+    borderColor: colors.gray[700],
     padding: 14,
     width: '100%',
-    borderRadius: 8,
-    color: colors.white
+    height: 52,
+    borderRadius: 14,
+    color: colors.white,
+    backgroundColor: colors.onyx
   },
   textarea: {
     borderWidth: 1,

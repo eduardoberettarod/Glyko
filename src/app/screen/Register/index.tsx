@@ -96,7 +96,7 @@ export default function Register() {
       <View style={styles.DateTimeInput}>
         <DateTimeInput
           mode="date"
-          label="Data de nascimento"
+          label="Data da Medição"
           value={birthDate}
           onChange={setBirthDate}
           maximumDate={new Date()}
@@ -104,7 +104,7 @@ export default function Register() {
 
         <DateTimeInput
           mode="time"
-          label="Horário preferido"
+          label="Horário da medição"
           value={preferredTime}
           onChange={setPreferredTime}
         />
@@ -124,7 +124,7 @@ export default function Register() {
       </View>
 
       <View style={styles.moodSelector}>
-        <Text style={styles.label}>Como se sente hoje?</Text>
+        <Text style={styles.label}>Como se sente?</Text>
         <MoodSelector />
       </View>
 

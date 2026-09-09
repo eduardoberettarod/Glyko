@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
+    paddingHorizontal: 12,
     backgroundColor: colors.onyx,
     borderWidth: 1,
     borderColor: colors.gray[700],

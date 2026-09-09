@@ -1,29 +1,21 @@
 import { View, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'expo-router';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 
-import { useRegisterFlow } from '@/context/RegisterFlowContext';
 import Button from '@/components/Button';
 import AbstractGradient from '@/components/AbstractGradient'
 import Input from '@/components/Input';
 import { DateTimeInput } from '@/components/DateTimeInput';
-import PaginationIndicator from '@/components/Paginationindicator';
-
-// Total de telas do fluxo de cadastro (ajuste conforme o número real de passos)
-const REGISTER_TOTAL_STEPS = 3;
-const REGISTER_CURRENT_STEP = 0; // esta é a 1ª tela do fluxo
 
 export default function Index() {
 
   const router = useRouter();
   const insets = useSafeAreaInsets()
   const [birthDate, setBirthDate] = useState<Date>();
-  const { setFooterTop } = useRegisterFlow();
-  const spacerRef = useRef<View>(null);
   
   return (
     <KeyboardAvoidingView
@@ -72,18 +64,6 @@ export default function Index() {
         </View>
 
         <View style={styles.footer}>
-          <View
-            ref={spacerRef}
-            style={styles.pagination}
-            onLayout={() => spacerRef.current?.measureInWindow((x, y) => setFooterTop(y))}
-          >
-            <PaginationIndicator
-              total={REGISTER_TOTAL_STEPS}
-              activeIndex={REGISTER_CURRENT_STEP}
-              style={{ opacity: 0 }}
-            />
-          </View>
-
           <Button
             title={'Continuar'}
             borderColor={colors.emerald[500]}

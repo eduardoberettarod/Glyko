@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
   },
   footer: {
     gap: 10,
-    marginTop: 32,
+    marginTop: 42,
   },
   pagination: {
     alignSelf: 'center',

@@ -33,14 +33,6 @@ export default function Index() {
     >
       <AbstractGradient height={420} />
 
-      <View style={[styles.header, { marginTop: insets.top + 16 }]}>
-        <Image
-          source={require('@/assets/logoComplete.png')}
-          style={styles.image}
-          contentFit="contain"
-        />
-      </View>
-
       <ScrollView
         contentContainerStyle={[
           styles.content,
@@ -52,7 +44,7 @@ export default function Index() {
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
             <Text style={styles.title}>Crie sua</Text>
-            <Text style={styles.glyko}>conta</Text>
+            <Text style={styles.attention}>conta</Text>
           </View>
 
           <Text style={styles.subtitle}>
@@ -66,7 +58,7 @@ export default function Index() {
               <Input label={'Primeiro nome'} />
             </View>
             <View style={styles.nameField}>
-              <Input label={'Sobrenome'} />
+              <Input label={'SobrenomE'} />
             </View>
           </View>
 

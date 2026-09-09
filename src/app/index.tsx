@@ -49,7 +49,7 @@ export default function Index() {
         <View style={styles.footer}>
 
           <Button
-            title={'Criar conta'}
+            title={'Criar Conta'}
             borderColor={colors.emerald[500]}
             color={colors.emerald[500]}
             onPress={() => router.push('/RegisterPerson')}

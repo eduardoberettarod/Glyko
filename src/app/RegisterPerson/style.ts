@@ -6,17 +6,6 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    marginLeft: 18,
-    zIndex: 2,
-  },
-  image: {
-    width: 75,
-    height: 75,
-  },
   content: {
     flexGrow: 1,
     justifyContent: 'flex-end',
@@ -25,21 +14,21 @@ export const styles = StyleSheet.create({
   },
   welcomeContainer: {
     flexDirection: 'column',
-    gap: 4,
     marginBottom: 8,
+    gap: 4
   },
   textContainer: {
     marginBottom: 32,
   },
   title: {
     color: colors.white,
-    fontFamily: fonts.hankenGrotesk.medium,
-    fontSize: 34,
+    fontFamily: fonts.hankenGrotesk.light,
+    fontSize: 64,
   },
-  glyko: {
+  attention: {
     color: colors.white,
     fontFamily: fonts.hankenGrotesk.bold,
-    fontSize: 34,
+    fontSize: 64,
     fontWeight: 700,
   },
   subtitle: {

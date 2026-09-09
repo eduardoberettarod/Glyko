@@ -24,17 +24,8 @@ export default function Profile() {
       info: 'On',
     },
     {
-      icon: 'ruler',
-      text: 'Medidas',
-      info: 'mg/dL',
-    },
-    {
       icon: 'export',
       text: 'Exportar Dados',
-    },
-    {
-      icon: 'star',
-      text: 'Contato de Emergência',
     },
     {
       icon: 'info',
@@ -87,7 +78,7 @@ export default function Profile() {
       }
 
       ListFooterComponent={
-        <View style={{ marginTop: 32 }}>
+        <View style={{ marginTop: 72 }}>
           <Button
             title="SAIR"
             borderColor={colors.gray[700]}

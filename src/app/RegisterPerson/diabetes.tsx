@@ -13,6 +13,7 @@ import Input from '@/components/Input';
 import { DateTimeInput } from '@/components/DateTimeInput';
 import PaginationIndicator from '@/components/Paginationindicator';
 import BackButton from '@/components/BackButton';
+import { DiabetesTypeSelector, DiabetesType } from '@/components/DiabetesTypeSelector';
 
 // Total de telas do fluxo de cadastro (ajuste conforme o número real de passos)
 const REGISTER_TOTAL_STEPS = 3;
@@ -25,6 +26,7 @@ export default function Diabetes() {
   const [birthDate, setBirthDate] = useState<Date>();
   const { setFooterTop } = useRegisterFlow();
   const spacerRef = useRef<View>(null);
+  const [diabetesType, setDiabetesType] = useState<DiabetesType>('tipo1');
 
   return (
     <KeyboardAvoidingView
@@ -34,13 +36,6 @@ export default function Diabetes() {
     >
       <AbstractGradient height={420} />
 
-      <View style={[styles.header, { marginTop: insets.top + 16 }]}>
-        <Image
-          source={require('@/assets/logoComplete.png')}
-          style={styles.image}
-          contentFit="contain"
-        />
-      </View>
 
       <ScrollView
         contentContainerStyle={[
@@ -52,32 +47,16 @@ export default function Diabetes() {
       >
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.title}>Crie sua</Text>
-            <Text style={styles.glyko}>ASDASDASDAS</Text>
+            <Text style={styles.title}>Seu perfil metabólico</Text>
           </View>
 
           <Text style={styles.subtitle}>
-            Preencha seus dados para começar a monitorar sua glicemia
+            Selecione o seu tipo de diabetes para personalizarmos sua experiência e calibrarmos as métricas do painel.
           </Text>
         </View>
 
         <View style={styles.form}>
-          <View style={styles.nameRow}>
-            <View style={styles.nameField}>
-              <Input label={'Primeiro nome'} />
-            </View>
-            <View style={styles.nameField}>
-              <Input label={'Sobrenome'} />
-            </View>
-          </View>
-
-          <DateTimeInput
-            mode="date"
-            label="Data de nascimento"
-            value={birthDate}
-            onChange={setBirthDate}
-            maximumDate={new Date()}
-          />
+          <DiabetesTypeSelector value={diabetesType} onChange={setDiabetesType} />
         </View>
 
         <View style={styles.footer}>
@@ -98,10 +77,10 @@ export default function Diabetes() {
             onPress={() => router.back()}
             />
             <Button
-              title={'Continuar'}
+              title={'Finalizar Cadastro'}
               borderColor={colors.emerald[500]}
               color={colors.emerald[500]}
-              onPress={() => router.push('/RegisterPerson/diabetes')}
+              onPress={() => router.push('/screen/Dashboard')}
               style={{ flex: 1 }}
             />
           </View>

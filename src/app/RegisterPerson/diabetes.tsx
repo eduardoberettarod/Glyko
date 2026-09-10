@@ -1,4 +1,4 @@
-import { View, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { View, Text, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useRouter } from 'expo-router';
 import { colors } from '@/theme/colors';
@@ -13,6 +13,9 @@ import { DateTimeInput } from '@/components/DateTimeInput';
 import PaginationIndicator from '@/components/Paginationindicator';
 import BackButton from '@/components/BackButton';
 import { DiabetesTypeSelector, DiabetesType } from '@/components/DiabetesTypeSelector';
+import { useRegisterFlow } from '@/contexts/RegisterFlowContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { criarUsuario } from '@/database/users';
 
 // Total de telas do fluxo de cadastro (ajuste conforme o número real de passos)
 const REGISTER_TOTAL_STEPS = 3;
@@ -22,7 +25,9 @@ export default function Diabetes() {
 
   const router = useRouter();
   const insets = useSafeAreaInsets()
-  const [diabetesType, setDiabetesType] = useState<DiabetesType>('tipo1');
+  const { data, updateData } = useRegisterFlow();
+  const { login } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <KeyboardAvoidingView
@@ -53,8 +58,8 @@ export default function Diabetes() {
 
         <View style={styles.form}>
           <DiabetesTypeSelector
-            value={diabetesType}
-            onChange={setDiabetesType}
+            value={data.diabetesType}
+            onChange={(type) => updateData({ diabetesType: type })}
           />
         </View>
 
@@ -64,11 +69,39 @@ export default function Diabetes() {
               onPress={() => router.back()}
             />
             <Button
-              title={'Finalizar Cadastro'}
+              title={isSubmitting ? 'Enviando...' : 'Finalizar Cadastro'}
               borderColor={colors.emerald[500]}
               color={colors.emerald[500]}
-              onPress={() => router.push('/screen/Dashboard')}
-              style={{ flex: 1 }}
+              disabled={isSubmitting}
+              style={{ flex: 1, opacity: isSubmitting ? 0.6 : 1 }}
+              onPress={async () => {
+                if (isSubmitting) {
+                  return;
+                }
+
+                setIsSubmitting(true);
+
+                try {
+                  const usuarioCriado = await criarUsuario({
+                    first_name: data.firstName,
+                    last_name: data.lastName,
+                    email: data.email,
+                    password: data.password,
+                    birth_date: (data.birthDate ?? new Date()).toISOString(),
+                    diabetes_type: data.diabetesType,
+                  });
+
+                  login(usuarioCriado);
+                  router.push('/screen/Dashboard');
+                } catch (error) {
+                  Alert.alert(
+                    'Não foi possível finalizar o cadastro',
+                    'Verifique seus dados e tente novamente.'
+                  );
+                } finally {
+                  setIsSubmitting(false);
+                }
+              }}
             />
           </View>
         </View>

@@ -4,6 +4,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
+import { AuthProvider } from '@/contexts/AuthContext';
 import {
   useFonts,
   HankenGrotesk_300Light,
@@ -28,16 +29,18 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <KeyboardProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: colors.black }
-          }}
-          />
-          <StatusBar hidden />
-        </GestureHandlerRootView>
-      </KeyboardProvider>
+      <AuthProvider>
+        <KeyboardProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: colors.black }
+            }}
+            />
+            <StatusBar hidden />
+          </GestureHandlerRootView>
+        </KeyboardProvider>
+      </AuthProvider>
     </SafeAreaProvider>
   )
 }

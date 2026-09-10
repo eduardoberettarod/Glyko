@@ -2,7 +2,18 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { styles } from './style';
 
-export default function MetricsPanel() {
+interface MetricsPanelProps {
+  average: number | null;
+  highest: number | null;
+  lowest: number | null;
+  latest: number | null;
+}
+
+function formatValue(value: number | null) {
+  return value === null ? '--' : String(value);
+}
+
+export default function MetricsPanel({ average, highest, lowest, latest }: MetricsPanelProps) {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
@@ -11,7 +22,7 @@ export default function MetricsPanel() {
           <Text style={styles.title}>Média Diária</Text>
 
           <View style={styles.valueContainer}>
-            <Text style={styles.number}>118</Text>
+            <Text style={styles.number}>{formatValue(average)}</Text>
             <Text style={styles.tag}>mg/dL</Text>
           </View>
         </View>
@@ -20,7 +31,7 @@ export default function MetricsPanel() {
           <Text style={styles.title}>Mais Alto</Text>
 
           <View style={styles.valueContainer}>
-            <Text style={styles.number}>156</Text>
+            <Text style={styles.number}>{formatValue(highest)}</Text>
             <Text style={styles.tag}>mg/dL</Text>
           </View>
         </View>
@@ -35,7 +46,7 @@ export default function MetricsPanel() {
           <Text style={styles.title}>Mais Baixo</Text>
 
           <View style={styles.valueContainer}>
-            <Text style={styles.number}>92</Text>
+            <Text style={styles.number}>{formatValue(lowest)}</Text>
             <Text style={styles.tag}>mg/dL</Text>
           </View>
         </View>
@@ -44,7 +55,7 @@ export default function MetricsPanel() {
           <Text style={styles.title}>Último Registro</Text>
 
           <View style={styles.valueContainer}>
-            <Text style={styles.number}>98</Text>
+            <Text style={styles.number}>{formatValue(latest)}</Text>
             <Text style={styles.tag}>mg/dL</Text>
           </View>
         </View>

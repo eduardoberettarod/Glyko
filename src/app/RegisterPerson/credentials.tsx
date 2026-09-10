@@ -1,5 +1,5 @@
 import { View, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { useRouter } from 'expo-router';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
@@ -9,15 +9,15 @@ import Button from '@/components/Button';
 import AbstractGradient from '@/components/AbstractGradient'
 import Input from '@/components/Input';
 import BackButton from '@/components/BackButton';
+import { useRegisterFlow } from '@/contexts/RegisterFlowContext';
 
 export default function Credentials() {
 
   const router = useRouter();
   const insets = useSafeAreaInsets()
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { data, updateData } = useRegisterFlow();
 
-  const canSubmit = email.trim().includes('@') && password.length >= 6;
+  const canSubmit = data.email.trim().includes('@') && data.password.length >= 6;
 
   return (
     <KeyboardAvoidingView
@@ -54,8 +54,8 @@ export default function Credentials() {
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
-            value={email}
-            onChangeText={setEmail}
+            value={data.email}
+            onChangeText={(text) => updateData({ email: text })}
           />
 
           <Input
@@ -65,8 +65,8 @@ export default function Credentials() {
             secureTextEntry
             autoCapitalize="none"
             autoCorrect={false}
-            value={password}
-            onChangeText={setPassword}
+            value={data.password}
+            onChangeText={(text) => updateData({ password: text })}
           />
         </View>
 

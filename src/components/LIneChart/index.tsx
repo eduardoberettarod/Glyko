@@ -57,35 +57,10 @@ function withOpacity(hexColor: string, alpha: number) {
 
 const REFERENCE_LINE_OPACITY = 0.5
 
-const exampleDataByPeriod: Record<ChartPeriod, GlucoseTrendPoint[]> = {
-  '6m': [
-    { value: 55, label: 'Jan' },
-    { value: 35, label: 'Fev' },
-    { value: 65, label: 'Mar' },
-    { value: 95, label: 'Abr' },
-    { value: 30, label: 'Maio' },
-    { value: 100, label: 'Jun' },
-  ],
-  '3m': [
-    { value: 65, label: 'Abr' },
-    { value: 30, label: 'Maio' },
-    { value: 100, label: 'Jun' },
-  ],
-  '7d': [
-    { value: 60, label: 'Dom' },
-    { value: 42, label: 'Seg' },
-    { value: 78, label: 'Ter' },
-    { value: 50, label: 'Qua' },
-    { value: 88, label: 'Qui' },
-    { value: 66, label: 'Sex' },
-    { value: 95, label: 'Sáb' },
-  ],
-}
-
-export default function LineChart({ data, period = '6m' }: LineChartProps) {
+export default function LineChart({ data = [], period = '6m' }: LineChartProps) {
   const [chartWidth, setChartWidth] = useState(0)
 
-  const points = data ?? exampleDataByPeriod[period]
+  const points = data
 
   const handleChartAreaLayout = (event: LayoutChangeEvent) => {
     setChartWidth(event.nativeEvent.layout.width)

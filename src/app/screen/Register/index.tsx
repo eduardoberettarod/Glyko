@@ -1,10 +1,11 @@
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, Alert } from 'react-native'
 import React, { useState } from 'react'
+import { useRouter } from 'expo-router';
 import { styles } from './style';
 import { colors } from '@/theme/colors';
 
 //components
-import { MoodSelector } from '@/components/MoodSelector';
+import { MoodSelector, MoodId } from '@/components/MoodSelector';
 // import Scroll from '@/components/Scroll';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -15,9 +16,15 @@ import { NumericInput } from '@/components/NumericInput';
 import ReturnPage from '@/components/ReturnPage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useAuth } from '@/contexts/AuthContext';
+import { criarMedicao } from '@/database/glucose_measurements';
+import { listarHumores } from '@/database/moods';
+
 export default function Register() {
 
+  const router = useRouter();
   const insets = useSafeAreaInsets()
+  const { user } = useAuth();
   const MARGIN_TOP = 30
   const MARGIN_BOTTOM = 40
   type MeasurementContext =
@@ -29,9 +36,12 @@ export default function Register() {
     | 'after_exercise';
 
   const [measurementContext, setMeasurementContext] = useState<MeasurementContext>('fasting');
-  const [birthDate, setBirthDate] = useState<Date>(new Date());
-  const [preferredTime, setPreferredTime] = useState<Date>(new Date());
+  const [measurementDate, setMeasurementDate] = useState<Date>(new Date());
+  const [measurementTime, setMeasurementTime] = useState<Date>(new Date());
   const [glicemia, setGlicemia] = useState('');
+  const [mood, setMood] = useState<MoodId>('happy');
+  const [notes, setNotes] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const measurementContexts: { label: string; value: MeasurementContext }[] = [
     {
@@ -66,6 +76,59 @@ export default function Register() {
     }
   };
 
+  // Junta a data escolhida com o horário escolhido em um único instante.
+  function combinarDataEHorario(data: Date, horario: Date) {
+    const resultado = new Date(data);
+    resultado.setHours(horario.getHours(), horario.getMinutes(), 0, 0);
+    return resultado;
+  }
+
+  async function buscarIdDoHumorSelecionado(): Promise<number | null> {
+    try {
+      const humores = await listarHumores();
+      const humorEncontrado = humores.find(
+        (humor) => humor.name.toLowerCase() === mood.toLowerCase()
+      );
+      return humorEncontrado?.id ?? null;
+    } catch (error) {
+      // Se não for possível buscar o humor, a medição ainda é salva sem ele.
+      return null;
+    }
+  }
+
+  async function handleSalvar() {
+    if (!user || isSubmitting) {
+      return;
+    }
+
+    const glucoseLevel = Number(glicemia);
+
+    if (!glicemia || Number.isNaN(glucoseLevel)) {
+      Alert.alert('Informe a glicemia', 'Digite um valor de glicemia válido.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const moodId = await buscarIdDoHumorSelecionado();
+
+      await criarMedicao({
+        user_id: user.id,
+        glucose_level: glucoseLevel,
+        measurement_context: measurementContext,
+        measured_at: combinarDataEHorario(measurementDate, measurementTime).toISOString(),
+        mood_id: moodId,
+        notes: notes.trim().length > 0 ? notes.trim() : null,
+      });
+
+      router.back();
+    } catch (error) {
+      Alert.alert('Não foi possível salvar', 'Tente novamente em instantes.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <ScrollView
@@ -97,16 +160,16 @@ export default function Register() {
         <DateTimeInput
           mode="date"
           label="Data da Medição"
-          value={birthDate}
-          onChange={setBirthDate}
+          value={measurementDate}
+          onChange={setMeasurementDate}
           maximumDate={new Date()}
         />
 
         <DateTimeInput
           mode="time"
           label="Horário da medição"
-          value={preferredTime}
-          onChange={setPreferredTime}
+          value={measurementTime}
+          onChange={setMeasurementTime}
         />
       </View>
 
@@ -125,7 +188,7 @@ export default function Register() {
 
       <View style={styles.moodSelector}>
         <Text style={styles.label}>Como se sente?</Text>
-        <MoodSelector />
+        <MoodSelector value={mood} onChange={setMood} />
       </View>
 
       <View style={styles.observation}>
@@ -134,15 +197,19 @@ export default function Register() {
           isTextarea={true}
           placeholder={'Adicione notas sobre a refeição, atividade física ou medicação...'}
           placeholderTextColor={colors.gray[700]}
+          value={notes}
+          onChangeText={setNotes}
         />
       </View>
 
       <View style={styles.footer}>
         <Button
-          title={'Salvar Registro'}
+          title={isSubmitting ? 'Salvando...' : 'Salvar Registro'}
           borderColor={colors.gray[700]}
           colorText={colors.emerald[500]}
           color={colors.onyx}
+          disabled={isSubmitting}
+          onPress={handleSalvar}
         />
       </View>
 

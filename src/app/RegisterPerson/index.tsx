@@ -1,5 +1,5 @@
 import { View, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { useRouter } from 'expo-router';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
@@ -10,12 +10,18 @@ import Button from '@/components/Button';
 import AbstractGradient from '@/components/AbstractGradient'
 import Input from '@/components/Input';
 import { DateTimeInput } from '@/components/DateTimeInput';
+import { useRegisterFlow } from '@/contexts/RegisterFlowContext';
 
 export default function Index() {
 
   const router = useRouter();
   const insets = useSafeAreaInsets()
-  const [birthDate, setBirthDate] = useState<Date>();
+  const { data, updateData } = useRegisterFlow();
+
+  const canSubmit =
+    data.firstName.trim().length > 0 &&
+    data.lastName.trim().length > 0 &&
+    !!data.birthDate;
   
   return (
     <KeyboardAvoidingView
@@ -47,18 +53,26 @@ export default function Index() {
         <View style={styles.form}>
           <View style={styles.nameRow}>
             <View style={styles.nameField}>
-              <Input label={'Primeiro nome'} />
+              <Input
+                label={'Primeiro nome'}
+                value={data.firstName}
+                onChangeText={(text) => updateData({ firstName: text })}
+              />
             </View>
             <View style={styles.nameField}>
-              <Input label={'SobrenomE'} />
+              <Input
+                label={'Sobrenome'}
+                value={data.lastName}
+                onChangeText={(text) => updateData({ lastName: text })}
+              />
             </View>
           </View>
 
           <DateTimeInput
             mode="date"
             label="Data de nascimento"
-            value={birthDate}
-            onChange={setBirthDate}
+            value={data.birthDate}
+            onChange={(date) => updateData({ birthDate: date })}
             maximumDate={new Date()}
           />
         </View>
@@ -68,6 +82,8 @@ export default function Index() {
             title={'Continuar'}
             borderColor={colors.emerald[500]}
             color={colors.emerald[500]}
+            style={{ opacity: canSubmit ? 1 : 0.5 }}
+            disabled={!canSubmit}
             onPress={() => router.push('/RegisterPerson/credentials')}
           />
         </View>

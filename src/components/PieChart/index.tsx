@@ -27,12 +27,6 @@ const statusConfig = [
   { status: 'baixa' as const, label: 'Baixas', color: colors.sky[600] },
 ]
 
-const exampleMeasurements: GlucoseMeasurement[] = [
-  ...Array.from({ length: 10 }, () => ({ status: 'normal' as const })),
-  ...Array.from({ length: 7 }, () => ({ status: 'baixa' as const })),
-  ...Array.from({ length: 3 }, () => ({ status: 'alta' as const })),
-]
-
 // Junta cada status (normal/alta/baixa) com sua contagem e percentual
 // dentro do total de medições, descartando os status sem nenhuma ocorrência.
 function buildChartData(measurements: GlucoseMeasurement[]) {
@@ -62,7 +56,7 @@ function useEntranceAnimation() {
   }))
 }
 
-export default function PieChart({ measurements = exampleMeasurements }: PieChartProps) {
+export default function PieChart({ measurements = [] }: PieChartProps) {
   const entranceStyle = useEntranceAnimation()
 
   if (measurements.length === 0) {

@@ -9,6 +9,8 @@ type LevelType = 'low' | 'high' | 'normal';
 
 type Props = {
   level: LevelType;
+  glucoseLevel: number;
+  time: string;
   selected?: boolean;
   onPress?: () => void;
   onLongPress?: () => void;
@@ -16,6 +18,8 @@ type Props = {
 
 export default function Card({
   level,
+  glucoseLevel,
+  time,
   selected = false,
   onPress,
   onLongPress,
@@ -62,7 +66,7 @@ export default function Card({
 
         <View style={styles.status}>
           <Text style={styles.glucose}>
-            212 mg/dL
+            {glucoseLevel} mg/dL
           </Text>
 
           <Text style={styles.level}>
@@ -76,7 +80,7 @@ export default function Card({
 
       <View style={styles.right}>
         <Text style={[styles.time, selected && {marginRight: 8}]}>
-          12:16
+          {time}
         </Text>
 
         {!selected && (

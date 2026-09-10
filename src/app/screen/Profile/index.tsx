@@ -10,18 +10,32 @@ import CardProfile from '@/components/CardProfile';
 import Separator from '@/components/Separator';
 import { router } from 'expo-router';
 
+import { useAuth } from '@/contexts/AuthContext';
+import { DiabetesType } from '@/components/DiabetesTypeSelector';
+
 type DataItem = {
   icon: 'bell' | 'ruler' | 'export' | 'star' | 'info';
   text: string;
   info?: string;
 };
 
+// Rótulo exibido para cada tipo de diabetes salvo no banco.
+const LABEL_DO_TIPO_DE_DIABETES: Record<string, string> = {
+  tipo1: 'Tipo 1',
+  tipo2: 'Tipo 2',
+  gestacional: 'Gestacional',
+  outro: 'Outro',
+};
+
 export default function Profile() {
+  const insets = useSafeAreaInsets();
+  const { user, logout } = useAuth();
+
   const data: DataItem[] = [
     {
       icon: 'bell',
       text: 'Notificações',
-      info: 'On',
+      info: user?.notifications_enabled ? 'On' : 'Off',
     },
     {
       icon: 'export',
@@ -33,8 +47,6 @@ export default function Profile() {
     },
   ];
 
-  const insets = useSafeAreaInsets();
-
   const renderItem = ({ item }: { item: DataItem }) => (
     <CardProfile
       icon={item.icon}
@@ -42,6 +54,14 @@ export default function Profile() {
       info={item.info}
     />
   );
+
+  const nomeCompleto = user
+    ? `${user.first_name} ${user.last_name}`
+    : '';
+
+  const tipoDeDiabetes = user
+    ? LABEL_DO_TIPO_DE_DIABETES[user.diabetes_type] ?? user.diabetes_type
+    : '';
 
   return (
     <FlatList
@@ -67,11 +87,11 @@ export default function Profile() {
 
           <View style={styles.info}>
             <Text style={styles.user}>
-              Eduardo Beretta
+              {nomeCompleto}
             </Text>
 
             <Text style={styles.diabetes}>
-              Diabetes • Tipo 1
+              Diabetes • {tipoDeDiabetes}
             </Text>
           </View>
         </View>
@@ -83,7 +103,10 @@ export default function Profile() {
             title="SAIR"
             borderColor={colors.gray[700]}
             colorText={colors.red[400]}
-            onPress={() => router.push('/')}
+            onPress={() => {
+              logout();
+              router.push('/');
+            }}
           />
         </View>
       }

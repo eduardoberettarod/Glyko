@@ -4,25 +4,20 @@ import { useRouter } from 'expo-router';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Image } from 'expo-image';
 
 import Button from '@/components/Button';
 import AbstractGradient from '@/components/AbstractGradient'
 import Input from '@/components/Input';
-import { DateTimeInput } from '@/components/DateTimeInput';
-import PaginationIndicator from '@/components/Paginationindicator';
 import BackButton from '@/components/BackButton';
-import { DiabetesTypeSelector, DiabetesType } from '@/components/DiabetesTypeSelector';
 
-// Total de telas do fluxo de cadastro (ajuste conforme o número real de passos)
-const REGISTER_TOTAL_STEPS = 3;
-const REGISTER_CURRENT_STEP = 0; // esta é a 1ª tela do fluxo
-
-export default function Diabetes() {
+export default function Credentials() {
 
   const router = useRouter();
   const insets = useSafeAreaInsets()
-  const [diabetesType, setDiabetesType] = useState<DiabetesType>('tipo1');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const canSubmit = email.trim().includes('@') && password.length >= 6;
 
   return (
     <KeyboardAvoidingView
@@ -31,7 +26,6 @@ export default function Diabetes() {
       keyboardVerticalOffset={insets.top}
     >
       <AbstractGradient height={420} />
-
 
       <ScrollView
         contentContainerStyle={[
@@ -43,18 +37,36 @@ export default function Diabetes() {
       >
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.title}>Seu perfil metabólico</Text>
+            <Text style={styles.title}>Proteja sua</Text>
+            <Text style={styles.attention}>conta</Text>
           </View>
 
           <Text style={styles.subtitle}>
-            Selecione o seu tipo de diabetes para personalizarmos sua experiência e calibrarmos as métricas do painel.
+            Crie um e-mail e senha para acessar sua conta sempre que quiser monitorar sua glicemia
           </Text>
         </View>
 
         <View style={styles.form}>
-          <DiabetesTypeSelector
-            value={diabetesType}
-            onChange={setDiabetesType}
+          <Input
+            label={'E-mail'}
+            placeholder="seu@email.com"
+            placeholderTextColor={colors.gray[500]}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={email}
+            onChangeText={setEmail}
+          />
+
+          <Input
+            label={'Senha'}
+            placeholder="Mínimo de 6 caracteres"
+            placeholderTextColor={colors.gray[500]}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={password}
+            onChangeText={setPassword}
           />
         </View>
 
@@ -64,15 +76,14 @@ export default function Diabetes() {
               onPress={() => router.back()}
             />
             <Button
-              title={'Finalizar Cadastro'}
+              title={'Continuar'}
               borderColor={colors.emerald[500]}
               color={colors.emerald[500]}
-              onPress={() => router.push('/screen/Dashboard')}
-              style={{ flex: 1 }}
+              style={{ flex: 1, opacity: canSubmit ? 1 : 0.5 }}
+              onPress={() => router.push('/RegisterPerson/diabetes')}
             />
           </View>
         </View>
-
       </ScrollView>
     </KeyboardAvoidingView>
   )

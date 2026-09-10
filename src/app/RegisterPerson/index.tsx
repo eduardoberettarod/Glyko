@@ -20,7 +20,7 @@ export default function Index() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={insets.top}
     >
       <AbstractGradient height={420} />
@@ -68,7 +68,7 @@ export default function Index() {
             title={'Continuar'}
             borderColor={colors.emerald[500]}
             color={colors.emerald[500]}
-            onPress={() => router.push('/RegisterPerson/diabetes')}
+            onPress={() => router.push('/RegisterPerson/credentials')}
           />
         </View>
       </ScrollView>

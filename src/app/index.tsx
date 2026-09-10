@@ -51,7 +51,7 @@ export default function Index() {
             title={'Login'}
             borderColor={colors.gray[700]}
             colorText={colors.gray[700]}
-            onPress={() => router.push('/screen/Dashboard')}
+            onPress={() => router.push('/Login')}
           />
 
         </View>

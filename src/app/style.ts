@@ -11,9 +11,7 @@ export const styles = StyleSheet.create({
     gap: 10
   },
   welcomeContainer: {
-    flexDirection: 'column',
-    gap: 4,
-    marginBottom: 12
+    marginBottom: 8
   },
   subtitle: {
     color: colors.gray[400],
@@ -23,13 +21,13 @@ export const styles = StyleSheet.create({
   glyko: {
     color: colors.white,
     fontFamily: fonts.hankenGrotesk.bold,
-    fontSize: 48,
+    fontSize: 64,
     fontWeight: 700
   },
   title: {
     color: colors.white,
-    fontFamily: fonts.hankenGrotesk.medium,
-    fontSize: 48
+    fontFamily: fonts.hankenGrotesk.light,
+    fontSize: 64
   },
   textContainer: {
     marginBottom: 56
@@ -37,16 +35,5 @@ export const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 18,
     zIndex: 2
-  },
-  header:{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    marginLeft: 18,
-    marginTop: 36
-  },
-  image: {
-    width: 75,
-    height: 75,
   }
 });

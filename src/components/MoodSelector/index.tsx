@@ -4,12 +4,12 @@ import { RadioIconInput } from '@/components/RadioIconInput';
 import { styles } from './style';
 
 const MOODS = [
-  { id: 'feliz', label: 'Feliz', iconName: 'emoticon-happy-outline' as const },
-  { id: 'triste', label: 'Triste', iconName: 'emoticon-sad-outline' as const },
-  { id: 'cansado', label: 'Cansado', iconName: 'battery-outline' as const },
-  { id: 'ansioso', label: 'Ansioso', iconName: 'emoticon-confused-outline' as const },
-  { id: 'estressado', label: 'Estressado', iconName: 'emoticon-dead-outline' as const },
-];
+  { id: 'happy', label: 'Feliz', iconName: 'emoticon-happy-outline' as const },
+  { id: 'sad', label: 'Triste', iconName: 'emoticon-sad-outline' as const },
+  { id: 'tired', label: 'Cansado', iconName: 'battery-outline' as const },
+  { id: 'anxious', label: 'Ansioso', iconName: 'emoticon-confused-outline' as const },
+  { id: 'stressed', label: 'Estressado', iconName: 'emoticon-dead-outline' as const },
+]
 
 export function MoodSelector() {
   const [selected, setSelected] = useState<string>('feliz');

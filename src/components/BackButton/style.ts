@@ -11,6 +11,6 @@ export const styles = StyleSheet.create({
   blur: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
+    padding: 16
   }
 });

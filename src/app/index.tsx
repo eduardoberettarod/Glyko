@@ -25,13 +25,6 @@ export default function Index() {
       <AbstractGradient height={500} />
       <AbstractGradient height={700} />
 
-      <View style={styles.header}>
-        <Image
-          source={require('@/assets/logoComplete.png')}
-          style={styles.image}
-          contentFit="contain"
-        />
-      </View>
 
       <View style={styles.content}>
 
@@ -39,8 +32,7 @@ export default function Index() {
 
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.title}>Bem vindo ao</Text>
-            <Text style={styles.glyko}>GLYKO!</Text>
+            <Text style={styles.title}>Bem vindo ao <Text style={styles.glyko}>GLYKO!</Text></Text>
           </View>
 
           <Text style={styles.subtitle}>O futuro do monitoramento de glicemia</Text>

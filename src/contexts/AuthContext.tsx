@@ -1,5 +1,10 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 import { Usuario } from '@/database/users';
+import {
+  cancelarLembretesDeMedicao,
+  sincronizarLembretesDeMedicao,
+} from '@/services/notifications';
 
 interface AuthContextValue {
   user: Usuario | null;
@@ -23,6 +28,33 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<Usuario | null>(null);
 
+  // Sempre que o usuário logado mudar (login, atualização de perfil),
+  // refaz o agendamento dos lembretes de medição do dia de acordo
+  // com a preferência de notificações dele.
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    if (user.notifications_enabled) {
+      sincronizarLembretesDeMedicao(user.id);
+    } else {
+      cancelarLembretesDeMedicao();
+    }
+  }, [user]);
+
+  // Quando o app volta a ficar em primeiro plano (ex: usuário abriu
+  // de novo no dia seguinte), reagenda os lembretes de hoje.
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (proximoEstado) => {
+      if (proximoEstado === 'active' && user?.notifications_enabled) {
+        sincronizarLembretesDeMedicao(user.id);
+      }
+    });
+
+    return () => subscription.remove();
+  }, [user]);
+
   function login(usuarioLogado: Usuario) {
     setUser(usuarioLogado);
   }
@@ -32,6 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   function logout() {
+    cancelarLembretesDeMedicao();
     setUser(null);
   }
 

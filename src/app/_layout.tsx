@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { configurarComportamentoDasNotificacoes } from '@/services/notifications';
 import {
   useFonts,
   HankenGrotesk_300Light,
@@ -13,6 +14,9 @@ import {
   HankenGrotesk_600SemiBold,
   HankenGrotesk_700Bold,
 } from "@expo-google-fonts/hanken-grotesk";
+
+// Só precisa ser configurado uma vez, quando o módulo é carregado.
+configurarComportamentoDasNotificacoes();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({

@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/AuthContext';
 import { criarMedicao } from '@/database/glucose_measurements';
 import { listarHumores } from '@/database/moods';
+import { sincronizarLembretesDeMedicao } from '@/services/notifications';
 
 export default function Register() {
 
@@ -121,6 +122,12 @@ export default function Register() {
         mood_id: moodId,
         notes: notes.trim().length > 0 ? notes.trim() : null,
       });
+
+      // A medição recém-salva pode "cobrir" o lembrete mais próximo
+      // (ex: medir às 11h30 cancela o lembrete das 12h).
+      if (user.notifications_enabled) {
+        sincronizarLembretesDeMedicao(user.id);
+      }
 
       router.back();
     } catch (error) {

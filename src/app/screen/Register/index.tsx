@@ -1,6 +1,7 @@
-import { View, Text, ScrollView, Alert } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useRouter } from 'expo-router';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { styles } from './style';
 import { colors } from '@/theme/colors';
 
@@ -138,7 +139,7 @@ export default function Register() {
   }
 
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
       contentContainerStyle={[
         styles.container,
         {
@@ -146,6 +147,9 @@ export default function Register() {
           paddingBottom: insets.bottom + MARGIN_BOTTOM
         }
       ]}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      bottomOffset={30}
     >
 
       <View>
@@ -220,6 +224,6 @@ export default function Register() {
         />
       </View>
 
-    </ScrollView>
+    </KeyboardAwareScrollView>
   )
 }

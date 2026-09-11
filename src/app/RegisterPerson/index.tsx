@@ -1,6 +1,7 @@
-import { View, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { View, Text } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -24,20 +25,17 @@ export default function Index() {
     !!data.birthDate;
   
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={insets.top}
-    >
+    <View style={styles.container}>
       <AbstractGradient height={420} />
 
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={[
           styles.content,
           { paddingBottom: insets.bottom + 24 },
         ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        bottomOffset={30}
       >
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
@@ -87,7 +85,7 @@ export default function Index() {
             onPress={() => router.push('/RegisterPerson/credentials')}
           />
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    </View>
   )
 }

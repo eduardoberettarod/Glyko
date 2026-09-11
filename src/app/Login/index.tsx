@@ -1,9 +1,9 @@
-import { View, Text, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useRouter } from 'expo-router';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Button from '@/components/Button';
 import AbstractGradient from '@/components/AbstractGradient'
@@ -15,7 +15,6 @@ import { autenticarUsuario } from '@/database/users';
 export default function Login() {
 
   const router = useRouter();
-  const insets = useSafeAreaInsets()
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,20 +47,16 @@ export default function Login() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={insets.top}
-    >
+    <View style={styles.container}>
       <AbstractGradient height={420} />
 
-      <ScrollView
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: insets.bottom + 24 },
-        ]}
+      <KeyboardAwareScrollView
+        contentContainerStyle={
+          styles.content
+        }
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        bottomOffset={30}
       >
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
@@ -113,7 +108,7 @@ export default function Login() {
             />
           </View>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    </View>
   )
 }

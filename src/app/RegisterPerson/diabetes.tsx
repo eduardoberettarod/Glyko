@@ -1,6 +1,7 @@
-import { View, Text, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useRouter } from 'expo-router';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -30,21 +31,17 @@ export default function Diabetes() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={insets.top}
-    >
+    <View style={styles.container}>
       <AbstractGradient height={420} />
 
-
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={[
           styles.content,
           { paddingBottom: insets.bottom + 24 },
         ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        bottomOffset={30}
       >
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
@@ -106,7 +103,7 @@ export default function Diabetes() {
           </View>
         </View>
 
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    </View>
   )
 }

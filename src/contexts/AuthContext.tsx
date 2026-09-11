@@ -1,13 +1,17 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
-import { Usuario } from '@/database/users';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Usuario, buscarUsuarioPorId } from '@/database/users';
 import {
   cancelarLembretesDeMedicao,
   sincronizarLembretesDeMedicao,
 } from '@/services/notifications';
 
+const CHAVE_USUARIO_LOGADO = '@glyko:userId';
+
 interface AuthContextValue {
   user: Usuario | null;
+  isLoadingUser: boolean;
   login: (user: Usuario) => void;
   updateUser: (user: Usuario) => void;
   logout: () => void;
@@ -16,21 +20,38 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 /**
- * Guarda o usuário atualmente logado para que qualquer tela
- * (Dashboard, Histórico, Perfil, Registro de medição...) saiba
- * quem é o usuário sem precisar receber isso por parâmetro de rota.
- *
- * Por enquanto a sessão vive apenas em memória (não sobrevive a um
- * fechamento completo do app). Se no futuro for necessário manter o
- * usuário logado entre aberturas do app, basta persistir `user` com
- * AsyncStorage/SecureStore aqui dentro.
+ * Guarda o usuário atualmente logado e persiste o id dele no
+ * dispositivo, para que a sessão sobreviva ao fechamento do app.
+ * O usuário só é deslogado quando `logout()` é chamado explicitamente
+ * (botão "Sair" da tela Profile).
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<Usuario | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
-  // Sempre que o usuário logado mudar (login, atualização de perfil),
-  // refaz o agendamento dos lembretes de medição do dia de acordo
-  // com a preferência de notificações dele.
+  // Ao iniciar o app, verifica se existe um id salvo e recarrega
+  // os dados atuais do usuário direto do banco (evita usar dados
+  // desatualizados que ficariam presos no armazenamento local).
+  useEffect(() => {
+    async function restaurarSessao() {
+      try {
+        const idSalvo = await AsyncStorage.getItem(CHAVE_USUARIO_LOGADO);
+
+        if (idSalvo) {
+          const usuario = await buscarUsuarioPorId(Number(idSalvo));
+          setUser(usuario);
+        }
+      } catch (error) {
+        // Id inválido, usuário excluído, etc. Remove a sessão salva.
+        await AsyncStorage.removeItem(CHAVE_USUARIO_LOGADO);
+      } finally {
+        setIsLoadingUser(false);
+      }
+    }
+
+    restaurarSessao();
+  }, []);
+
   useEffect(() => {
     if (!user) {
       return;
@@ -43,8 +64,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  // Quando o app volta a ficar em primeiro plano (ex: usuário abriu
-  // de novo no dia seguinte), reagenda os lembretes de hoje.
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (proximoEstado) => {
       if (proximoEstado === 'active' && user?.notifications_enabled) {
@@ -55,21 +74,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.remove();
   }, [user]);
 
-  function login(usuarioLogado: Usuario) {
+  async function login(usuarioLogado: Usuario) {
     setUser(usuarioLogado);
+    await AsyncStorage.setItem(CHAVE_USUARIO_LOGADO, String(usuarioLogado.id));
   }
 
   function updateUser(usuarioAtualizado: Usuario) {
     setUser(usuarioAtualizado);
   }
 
-  function logout() {
+  async function logout() {
     cancelarLembretesDeMedicao();
     setUser(null);
+    await AsyncStorage.removeItem(CHAVE_USUARIO_LOGADO);
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, updateUser, logout }}>
+    <AuthContext.Provider value={{ user, isLoadingUser, login, updateUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

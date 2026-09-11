@@ -21,7 +21,6 @@ import { styles as dropdownStyles } from '@/components/Dropdown/style';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { buscarDadosGrafico, excluirMedicoes, Medicao } from '@/database/glucose_measurements';
-import { getCurrentDate } from '@/utils/getCurrentDate';
 
 type Period = '7d' | '3m' | '6m';
 type Level = 'low' | 'normal' | 'high';
@@ -39,6 +38,14 @@ const MESES_ABREVIADOS = [
   'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez',
 ];
 
+// Usados no título de cada grupo de medições (ex: "Hoje, Setembro 11"
+// ou "Quinta, Setembro 10").
+const DIAS_DA_SEMANA = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+const MESES = [
+  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+];
+
 // No período de 7 dias o rótulo do gráfico mostra o dia da semana,
 // nos períodos mais longos mostra o mês (mais legível com muitos pontos).
 function rotuloDoGrafico(dataISO: string, period: Period) {
@@ -53,11 +60,69 @@ function horarioFormatado(dataISO: string) {
   return data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
+// Chave única (ano-mês-dia) usada para saber se duas medições
+// aconteceram no mesmo dia.
+function chaveDoDia(dataISO: string) {
+  const data = new Date(dataISO);
+  return `${data.getFullYear()}-${data.getMonth()}-${data.getDate()}`;
+}
+
+// Título exibido acima do grupo de medições daquele dia.
+// Hoje -> "Hoje, Setembro 11"
+// Outros dias -> "Quinta, Setembro 10"
+function tituloDoDia(dataISO: string) {
+  const data = new Date(dataISO);
+  const hoje = new Date();
+
+  const ehHoje =
+    data.getFullYear() === hoje.getFullYear() &&
+    data.getMonth() === hoje.getMonth() &&
+    data.getDate() === hoje.getDate();
+
+  const mes = MESES[data.getMonth()];
+  const dia = data.getDate();
+
+  if (ehHoje) {
+    return `Hoje, ${mes} ${dia}`;
+  }
+
+  return `${DIAS_DA_SEMANA[data.getDay()]}, ${mes} ${dia}`;
+}
+
+type GrupoDeMedicoes = {
+  chave: string;
+  titulo: string;
+  itens: Medicao[];
+};
+
+// Agrupa as medições (já ordenadas da mais recente para a mais antiga)
+// em blocos por dia, mantendo a ordem cronológica decrescente:
+// primeiro o grupo de hoje, depois ontem, depois anteontem...
+function agruparPorDia(medicoes: Medicao[]): GrupoDeMedicoes[] {
+  const grupos: GrupoDeMedicoes[] = [];
+
+  for (const medicao of medicoes) {
+    const chave = chaveDoDia(medicao.measured_at);
+    const ultimoGrupo = grupos[grupos.length - 1];
+
+    if (ultimoGrupo && ultimoGrupo.chave === chave) {
+      ultimoGrupo.itens.push(medicao);
+    } else {
+      grupos.push({
+        chave,
+        titulo: tituloDoDia(medicao.measured_at),
+        itens: [medicao],
+      });
+    }
+  }
+
+  return grupos;
+}
+
 export default function History() {
 
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
-  const hoje = getCurrentDate();
 
   const [period, setPeriod] = useState<Period>('7d');
   const [levelFilter, setLevelFilter] = useState<Level | null>(null);
@@ -141,6 +206,9 @@ export default function History() {
   // pensada para o gráfico de linha).
   const measurementsMaisRecentesPrimeiro = [...filteredMeasurements].reverse();
 
+  // Agrupa as medições já ordenadas em blocos por dia.
+  const gruposPorDia = agruparPorDia(measurementsMaisRecentesPrimeiro);
+
   const chartData = measurements.map((medicao) => ({
     value: medicao.glucose_level,
     label: rotuloDoGrafico(medicao.measured_at, period),
@@ -191,22 +259,24 @@ export default function History() {
         <Filter value={levelFilter} onChange={setLevelFilter} />
       </View>
 
-      <View style={{ gap: 12, marginTop: 24 }}>
+      <View style={{ gap: 24, marginTop: 24 }}>
 
-        <Text style={styles.label}>
-          Hoje, {hoje.month.charAt(0).toUpperCase() + hoje.month.slice(1)} {hoje.dayNumber}
-        </Text>
+        {gruposPorDia.map(grupo => (
+          <View key={grupo.chave} style={{ gap: 12 }}>
+            <Text style={styles.label}>{grupo.titulo}</Text>
 
-        {measurementsMaisRecentesPrimeiro.map(item => (
-          <Card
-            key={item.id}
-            level={item.classification as 'low' | 'normal' | 'high'}
-            glucoseLevel={item.glucose_level}
-            time={horarioFormatado(item.measured_at)}
-            selected={selectedIds.includes(item.id)}
-            onLongPress={() => handleLongPress(item.id)}
-            onPress={() => handlePress(item.id)}
-          />
+            {grupo.itens.map(item => (
+              <Card
+                key={item.id}
+                level={item.classification as 'low' | 'normal' | 'high'}
+                glucoseLevel={item.glucose_level}
+                time={horarioFormatado(item.measured_at)}
+                selected={selectedIds.includes(item.id)}
+                onLongPress={() => handleLongPress(item.id)}
+                onPress={() => handlePress(item.id)}
+              />
+            ))}
+          </View>
         ))}
 
       </View>

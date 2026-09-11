@@ -17,6 +17,7 @@ import {
   sincronizarLembretesDeMedicao,
   solicitarPermissaoDeNotificacoes,
 } from '@/services/notifications';
+import { exportarDadosDoUsuario } from '@/services/exportarDados';
 
 type DataItem = {
   icon: 'bell' | 'ruler' | 'export' | 'star' | 'info';
@@ -37,6 +38,7 @@ export default function Profile() {
   const insets = useSafeAreaInsets();
   const { user, updateUser, logout } = useAuth();
   const [isUpdatingNotifications, setIsUpdatingNotifications] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   async function handleToggleNotifications(novoValor: boolean) {
     if (!user || isUpdatingNotifications) {
@@ -81,6 +83,25 @@ export default function Profile() {
     }
   }
 
+  async function handleExportarDados() {
+    if (!user || isExporting) {
+      return;
+    }
+
+    setIsExporting(true);
+
+    try {
+      await exportarDadosDoUsuario(user);
+    } catch (error) {
+      Alert.alert(
+        'Não foi possível exportar',
+        'Tente novamente em instantes.'
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   const data: DataItem[] = [
     {
       icon: 'bell',
@@ -90,6 +111,7 @@ export default function Profile() {
     {
       icon: 'export',
       text: 'Exportar Dados',
+      info: isExporting ? 'Gerando...' : undefined,
     },
     {
       icon: 'info',
@@ -105,6 +127,18 @@ export default function Profile() {
           text={item.text}
           toggleValue={!!user?.notifications_enabled}
           onToggleChange={handleToggleNotifications}
+        />
+      );
+    }
+
+    if (item.text === 'Exportar Dados') {
+      return (
+        <CardProfile
+          icon={item.icon}
+          text={item.text}
+          info={item.info}
+          disabled={isExporting}
+          onPress={handleExportarDados}
         />
       );
     }

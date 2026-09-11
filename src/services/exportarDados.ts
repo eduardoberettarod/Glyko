@@ -1,5 +1,7 @@
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system/legacy';
+import { Alert, Platform } from 'react-native';
 
 import { Usuario } from '@/database/users';
 import { listarMedicoes, Medicao } from '@/database/glucose_measurements';
@@ -337,9 +339,76 @@ function montarHtmlDoRelatorio(
 }
 
 /**
+ * Abre a folha de compartilhamento nativa do sistema para o PDF já gerado
+ * (enviar por e-mail, WhatsApp, imprimir, etc).
+ */
+async function compartilharPdf(uri: string): Promise<void> {
+  const podeCompartilhar = await Sharing.isAvailableAsync();
+
+  if (!podeCompartilhar) {
+    Alert.alert(
+      'Não foi possível compartilhar',
+      'O compartilhamento de arquivos não está disponível neste dispositivo.'
+    );
+    return;
+  }
+
+  await Sharing.shareAsync(uri, {
+    mimeType: 'application/pdf',
+    dialogTitle: 'Histórico de glicemia',
+    UTI: 'com.adobe.pdf',
+  });
+}
+
+/**
+ * Salva o PDF diretamente no dispositivo.
+ *
+ * - Android: usa a Storage Access Framework para o usuário escolher a pasta
+ *   e salvar o arquivo de fato, sem passar pela folha de compartilhamento.
+ * - iOS: não existe uma API pública para salvar um arquivo sem interação do
+ *   usuário. Nesse caso reaproveitamos a folha de compartilhamento, que já
+ *   inclui a opção "Salvar em Arquivos".
+ */
+async function salvarPdfNoDispositivo(uri: string, nomeDoArquivo: string): Promise<void> {
+  if (Platform.OS === 'android') {
+    try {
+      const permissoes = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+      if (!permissoes.granted) {
+        Alert.alert(
+          'Permissão negada',
+          'Não foi possível salvar o arquivo sem acesso à pasta escolhida.'
+        );
+        return;
+      }
+
+      const conteudoEmBase64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const novoArquivoUri = await FileSystem.StorageAccessFramework.createFileAsync(
+        permissoes.directoryUri,
+        nomeDoArquivo,
+        'application/pdf'
+      );
+
+      await FileSystem.writeAsStringAsync(novoArquivoUri, conteudoEmBase64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      Alert.alert('Sucesso', 'O relatório foi salvo no dispositivo.');
+    } catch (error) {
+      Alert.alert('Não foi possível salvar', 'Tente novamente em instantes.');
+    }
+  } else {
+    await compartilharPdf(uri);
+  }
+}
+
+/**
  * Gera um PDF com os dados do usuário e todo o seu histórico de
- * medições, e abre o menu de compartilhamento do sistema (permitindo
- * salvar, enviar por e-mail/WhatsApp, imprimir, etc).
+ * medições, e pergunta se ele deseja salvar o arquivo no dispositivo
+ * ou compartilhá-lo (enviar por e-mail/WhatsApp, imprimir, etc).
  *
  * Pensado para ser entregue a um médico: nome, idade, tipo de
  * diabetes e a tabela completa de medições com data, hora, valor,
@@ -358,17 +427,32 @@ export async function exportarDadosDoUsuario(usuario: Usuario): Promise<void> {
 
   const { uri } = await Print.printToFileAsync({ html });
 
-  const podeCompartilhar = await Sharing.isAvailableAsync();
+  const nomeDoArquivo = `historico-glicemia-${usuario.first_name.toLowerCase()}.pdf`;
 
-  if (!podeCompartilhar) {
-    throw new Error(
-      'O compartilhamento de arquivos não está disponível neste dispositivo.'
+  // Aguarda a escolha do usuário antes de resolver a promise, para que a
+  // tela de Perfil continue mostrando "Gerando..." até a ação terminar.
+  return new Promise((resolve) => {
+    Alert.alert(
+      'Relatório gerado',
+      'O que você deseja fazer com o arquivo?',
+      [
+        { text: 'Cancelar', style: 'cancel', onPress: () => resolve() },
+        {
+          text: 'Salvar no dispositivo',
+          onPress: async () => {
+            await salvarPdfNoDispositivo(uri, nomeDoArquivo);
+            resolve();
+          },
+        },
+        {
+          text: 'Compartilhar',
+          onPress: async () => {
+            await compartilharPdf(uri);
+            resolve();
+          },
+        },
+      ],
+      { cancelable: true, onDismiss: () => resolve() }
     );
-  }
-
-  await Sharing.shareAsync(uri, {
-    mimeType: 'application/pdf',
-    dialogTitle: 'Histórico de glicemia',
-    UTI: 'com.adobe.pdf',
   });
 }

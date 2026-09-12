@@ -7,7 +7,7 @@ import { Icon } from '@/utils/icon';
 
 export default function IconProfile() {
   return (
-    <TouchableOpacity style={styles.container} activeOpacity={0.8}>
+    <TouchableOpacity activeOpacity={0.8}>
 
       <View style={styles.icon}>
         <Icon name={'edit'} size={18} />

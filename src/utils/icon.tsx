@@ -30,7 +30,7 @@ const personSvgXml = `<svg width="19" height="24" viewBox="0 0 19 24" fill="none
 </svg>`
 
 const editSvgXml = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-<path d="M19 8.875V17.875C19 18.1734 18.8815 18.4595 18.6705 18.6705C18.4595 18.8815 18.1734 19 17.875 19H2.125C1.82663 19 1.54048 18.8815 1.32951 18.6705C1.11853 18.4595 1 18.1734 1 17.875V2.125C1 1.82663 1.11853 1.54048 1.32951 1.32951C1.54048 1.11853 1.82663 1 2.125 1H11.125M19 1L7.75 12.25" stroke="#060606" stroke-width="2" stroke-linecap="round"/>
+<path d="M19 8.875V17.875C19 18.1734 18.8815 18.4595 18.6705 18.6705C18.4595 18.8815 18.1734 19 17.875 19H2.125C1.82663 19 1.54048 18.8815 1.32951 18.6705C1.11853 18.4595 1 18.1734 1 17.875V2.125C1 1.82663 1.11853 1.54048 1.32951 1.32951C1.54048 1.11853 1.82663 1 2.125 1H11.125M19 1L7.75 12.25" stroke="#ffff" stroke-width="2" stroke-linecap="round"/>
 </svg>`
 
 const bellSvgXml = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="19" viewBox="0 0 14 19" fill="none">

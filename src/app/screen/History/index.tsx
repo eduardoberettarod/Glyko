@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { View, Text } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import { styles } from './style';
 
@@ -122,6 +122,7 @@ function agruparPorDia(medicoes: Medicao[]): GrupoDeMedicoes[] {
 export default function History() {
 
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { user } = useAuth();
 
   const [period, setPeriod] = useState<Period>('7d');
@@ -144,6 +145,8 @@ export default function History() {
     }, [carregarMedicoes])
   );
 
+
+  
   const periods: { label: string; value: Period }[] = [
     {
       label: 'Últimos 7 dias',
@@ -176,16 +179,16 @@ export default function History() {
   };
 
   const handlePress = (id: number) => {
-
-    if (selectedIds.length === 0) {
+    if (selectedIds.length > 0) {
+      setSelectedIds(prev =>
+        prev.includes(id)
+          ? prev.filter(selectedId => selectedId !== id)
+          : [...prev, id]
+      );
       return;
     }
 
-    setSelectedIds(prev =>
-      prev.includes(id)
-        ? prev.filter(selectedId => selectedId !== id)
-        : [...prev, id]
-    );
+    router.push(`/screen/History/${id}`);
   };
 
   const handleDelete = async () => {

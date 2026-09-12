@@ -22,6 +22,14 @@ export default function TabBar() {
     return null
   }
 
+  const isFullScreenPage =
+    pathname === '/screen/Register' ||
+    (pathname.startsWith('/screen/History/') && pathname !== '/screen/History')
+
+  if (isFullScreenPage) {
+    return null
+  }
+
   const activeTab = tabs.find((tab) => tab.route === pathname)?.name ?? 'house'
 
   return (

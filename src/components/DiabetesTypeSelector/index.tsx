@@ -45,6 +45,7 @@ interface DiabetesTypeSelectorProps {
   onChange?: (value: DiabetesType) => void;
 }
 
+// Lista de cartões seletores para o usuário escolher o tipo de diabetes (Tipo 1, Tipo 2, Gestacional ou Outro).
 export function DiabetesTypeSelector({ value, onChange }: DiabetesTypeSelectorProps) {
   const [internalValue, setInternalValue] = useState<DiabetesType>('tipo1');
   const selected = value ?? internalValue;

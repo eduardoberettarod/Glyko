@@ -18,6 +18,7 @@ import {
 // Só precisa ser configurado uma vez, quando o módulo é carregado.
 configurarComportamentoDasNotificacoes();
 
+// Layout raiz do app: carrega as fontes, envolve tudo nos providers globais (sessão, teclado, gestos e safe area) e define o Stack de navegação.
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     HankenGrotesk_300Light,

@@ -20,6 +20,7 @@ type DotProps = {
   glowOpacity: number;
 };
 
+// Renderiza um único traço/bolinha do indicador de paginação, animando largura, altura, cor e brilho entre os estados ativo e inativo.
 function Dot({
   active,
   activeColor,
@@ -88,6 +89,7 @@ type PaginationIndicatorProps = {
   style?: StyleProp<ViewStyle>;
 };
 
+// Indicador de paginação com traços animados que marcam a página/passo atual (não está mais em uso no fluxo de cadastro).
 export default function PaginationIndicator({
   total,
   activeIndex,

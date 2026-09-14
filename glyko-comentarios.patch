@@ -1,0 +1,837 @@
+diff --git a/src/app/Login/index.tsx b/src/app/Login/index.tsx
+index 5f0091d..0520c41 100644
+--- a/src/app/Login/index.tsx
++++ b/src/app/Login/index.tsx
+@@ -12,6 +12,7 @@ import BackButton from '@/components/BackButton';
+ import { useAuth } from '@/contexts/AuthContext';
+ import { autenticarUsuario } from '@/database/users';
+ 
++// Tela de login com campos de e-mail e senha.
+ export default function Login() {
+ 
+   const router = useRouter();
+@@ -22,6 +23,7 @@ export default function Login() {
+ 
+   const canSubmit = email.trim().length > 0 && password.length > 0 && !isSubmitting;
+ 
++  // Valida as credenciais no banco e, se estiverem corretas, salva a sessão e leva o usuário ao Dashboard; senão mostra um alerta de erro.
+   async function handleLogin() {
+     if (!canSubmit) {
+       return;
+diff --git a/src/app/RegisterPerson/_layout.tsx b/src/app/RegisterPerson/_layout.tsx
+index 2a8a8a0..6158ec3 100644
+--- a/src/app/RegisterPerson/_layout.tsx
++++ b/src/app/RegisterPerson/_layout.tsx
+@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
+ import { StatusBar } from 'expo-status-bar';
+ import { RegisterFlowProvider } from '@/contexts/RegisterFlowContext';
+ 
++// Layout do fluxo de cadastro, que envolve as telas no RegisterFlowProvider para compartilhar os dados preenchidos entre os passos.
+ export default function Layout() {
+   return (
+     <SafeAreaProvider>
+diff --git a/src/app/RegisterPerson/credentials.tsx b/src/app/RegisterPerson/credentials.tsx
+index 01349e8..9ba42e1 100644
+--- a/src/app/RegisterPerson/credentials.tsx
++++ b/src/app/RegisterPerson/credentials.tsx
+@@ -12,6 +12,7 @@ import Input from '@/components/Input';
+ import BackButton from '@/components/BackButton';
+ import { useRegisterFlow } from '@/contexts/RegisterFlowContext';
+ 
++// Segundo passo do cadastro: coleta e-mail e senha (no modo edição, apenas o e-mail).
+ export default function Credentials() {
+ 
+   const router = useRouter();
+diff --git a/src/app/RegisterPerson/diabetes.tsx b/src/app/RegisterPerson/diabetes.tsx
+index 309e4bc..c528199 100644
+--- a/src/app/RegisterPerson/diabetes.tsx
++++ b/src/app/RegisterPerson/diabetes.tsx
+@@ -22,6 +22,7 @@ import { criarUsuario, atualizarUsuario } from '@/database/users';
+ const REGISTER_TOTAL_STEPS = 3;
+ const REGISTER_CURRENT_STEP = 0; // esta é a 1ª tela do fluxo
+ 
++// Último passo do cadastro: escolhe o tipo de diabetes e, ao confirmar, cria o usuário no banco (ou salva as alterações, se estiver editando o perfil).
+ export default function Diabetes() {
+ 
+   const router = useRouter();
+diff --git a/src/app/RegisterPerson/index.tsx b/src/app/RegisterPerson/index.tsx
+index 40c9d43..8fb1d0e 100644
+--- a/src/app/RegisterPerson/index.tsx
++++ b/src/app/RegisterPerson/index.tsx
+@@ -15,6 +15,7 @@ import { useRegisterFlow } from '@/contexts/RegisterFlowContext';
+ import { useAuth } from '@/contexts/AuthContext';
+ import { DiabetesType } from '@/components/DiabetesTypeSelector';
+ 
++// Primeiro passo do cadastro: coleta nome, sobrenome e data de nascimento (ou pré-preenche esses campos quando vindo da edição de perfil).
+ export default function Index() {
+ 
+   const router = useRouter();
+@@ -25,6 +26,7 @@ export default function Index() {
+ 
+   // Veio da tela de Perfil ("Editar Perfil"): carrega os dados atuais
+   // do usuário logado no formulário em vez de começar em branco.
++  // Se a tela foi aberta em modo edição, carrega os dados do usuário logado no formulário em vez de começar em branco.
+   useEffect(() => {
+     if (params.edit === '1' && user && !isEditing) {
+       setIsEditing(true);
+diff --git a/src/app/_layout.tsx b/src/app/_layout.tsx
+index a8cea4f..4309674 100644
+--- a/src/app/_layout.tsx
++++ b/src/app/_layout.tsx
+@@ -18,6 +18,7 @@ import {
+ // Só precisa ser configurado uma vez, quando o módulo é carregado.
+ configurarComportamentoDasNotificacoes();
+ 
++// Layout raiz do app: carrega as fontes, envolve tudo nos providers globais (sessão, teclado, gestos e safe area) e define o Stack de navegação.
+ export default function RootLayout() {
+   const [fontsLoaded] = useFonts({
+     HankenGrotesk_300Light,
+diff --git a/src/app/index.tsx b/src/app/index.tsx
+index 21b8341..563e9dc 100644
+--- a/src/app/index.tsx
++++ b/src/app/index.tsx
+@@ -9,6 +9,7 @@ import Button from '@/components/Button';
+ import AbstractGradient from '@/components/AbstractGradient'
+ import { useAuth } from '@/contexts/AuthContext';
+ 
++// Tela inicial de boas-vindas: redireciona direto para o Dashboard se já houver sessão salva, senão mostra os botões de criar conta e login.
+ export default function Index() {
+ 
+   const router = useRouter();
+diff --git a/src/app/screen/Dashboard/index.tsx b/src/app/screen/Dashboard/index.tsx
+index 0ab7571..a7ecb43 100644
+--- a/src/app/screen/Dashboard/index.tsx
++++ b/src/app/screen/Dashboard/index.tsx
+@@ -31,6 +31,7 @@ function classificacaoParaStatusDoPieChart(
+   return 'normal';
+ }
+ 
++// Devolve a saudação adequada ("Bom dia", "Boa tarde" ou "Boa noite") conforme a hora atual do dispositivo.
+ function saudacaoPeloHorario() {
+   const hora = new Date().getHours();
+ 
+@@ -46,6 +47,7 @@ interface Metricas {
+   latest: number | null;
+ }
+ 
++// Tela principal do app, com a saudação, as métricas do dia e o gráfico de distribuição das medições das últimas 24 horas.
+ export default function Index() {
+ 
+   const insets = useSafeAreaInsets()
+@@ -59,6 +61,7 @@ export default function Index() {
+   });
+   const [measurements, setMeasurements] = useState<GlucoseMeasurement[]>([]);
+ 
++  // Busca as métricas do dia e as medições do usuário, filtrando as últimas 24h para alimentar o gráfico de pizza.
+   const carregarDados = useCallback(async () => {
+     if (!user) {
+       return;
+diff --git a/src/app/screen/History/[id]/index.tsx b/src/app/screen/History/[id]/index.tsx
+index 33a82c6..37b1031 100644
+--- a/src/app/screen/History/[id]/index.tsx
++++ b/src/app/screen/History/[id]/index.tsx
+@@ -50,16 +50,19 @@ const MESES = [
+   'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro',
+ ];
+ 
++// Formata uma data ISO por extenso, no padrão "Quinta, 10 de setembro".
+ function dataFormatada(dataISO: string) {
+   const data = new Date(dataISO);
+   return `${DIAS_DA_SEMANA[data.getDay()]}, ${data.getDate()} de ${MESES[data.getMonth()]}`;
+ }
+ 
++// Formata uma data ISO como horário no padrão hh:mm.
+ function horaFormatada(dataISO: string) {
+   const data = new Date(dataISO);
+   return data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+ }
+ 
++// Tela de detalhe de uma medição, mostrando valor, data, hora, humor, contexto e observação, com opções de editar e excluir.
+ export default function DetalheDaMedicao() {
+   const router = useRouter();
+   const { id } = useLocalSearchParams<{ id: string }>();
+@@ -69,6 +72,7 @@ export default function DetalheDaMedicao() {
+   const [humor, setHumor] = useState<Humor | null>(null);
+   const [isLoading, setIsLoading] = useState(true);
+ 
++  // Busca a medição pelo id da rota junto com a lista de humores, e volta para a tela anterior se der erro.
+   const carregarMedicao = useCallback(async () => {
+     if (!user || !id) {
+       return;
+@@ -98,6 +102,7 @@ export default function DetalheDaMedicao() {
+     }, [carregarMedicao])
+   );
+ 
++  // Abre um alerta pedindo confirmação antes de apagar a medição, já que a exclusão é definitiva.
+   function confirmarExclusao() {
+     Alert.alert(
+       'Excluir registro?',
+@@ -109,6 +114,7 @@ export default function DetalheDaMedicao() {
+     );
+   }
+ 
++  // Apaga a medição do banco e volta para o histórico, avisando se a exclusão falhar.
+   async function handleExcluir() {
+     if (!user || !medicao) {
+       return;
+@@ -122,6 +128,7 @@ export default function DetalheDaMedicao() {
+     }
+   }
+ 
++  // Abre a tela de registro em modo edição, passando o id desta medição pela rota.
+   function handleEditar() {
+     if (!medicao) {
+       return;
+diff --git a/src/app/screen/History/index.tsx b/src/app/screen/History/index.tsx
+index 4281612..80bbbf2 100644
+--- a/src/app/screen/History/index.tsx
++++ b/src/app/screen/History/index.tsx
+@@ -55,6 +55,7 @@ function rotuloDoGrafico(dataISO: string, period: Period) {
+     : MESES_ABREVIADOS[data.getMonth()];
+ }
+ 
++// Formata uma data ISO como horário no padrão hh:mm, exibido em cada item da lista.
+ function horarioFormatado(dataISO: string) {
+   const data = new Date(dataISO);
+   return data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+@@ -119,6 +120,7 @@ function agruparPorDia(medicoes: Medicao[]): GrupoDeMedicoes[] {
+   return grupos;
+ }
+ 
++// Tela de histórico: lista as medições agrupadas por dia, com gráfico, filtros de período/nível e seleção múltipla para exclusão.
+ export default function History() {
+ 
+   const insets = useSafeAreaInsets();
+@@ -130,6 +132,7 @@ export default function History() {
+   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+   const [measurements, setMeasurements] = useState<Medicao[]>([]);
+ 
++  // Busca no banco as medições do usuário dentro do período selecionado e guarda no estado.
+   const carregarMedicoes = useCallback(async () => {
+     if (!user) {
+       return;
+@@ -162,12 +165,14 @@ export default function History() {
+     },
+   ];
+ 
++  // Atualiza o período do filtro (7 dias, 3 meses ou 6 meses), ignorando valor nulo.
+   const handlePeriodChange = (value: Period | null) => {
+     if (value) {
+       setPeriod(value);
+     }
+   };
+ 
++  // Ativa o modo de seleção múltipla ao segurar um item, adicionando-o à lista de selecionados.
+   const handleLongPress = (id: number) => {
+     setSelectedIds(prev => {
+       if (prev.includes(id)) {
+@@ -178,6 +183,7 @@ export default function History() {
+     });
+   };
+ 
++  // Ao tocar num item: marca/desmarca se o modo de seleção estiver ativo, senão abre a tela de detalhe da medição.
+   const handlePress = (id: number) => {
+     if (selectedIds.length > 0) {
+       setSelectedIds(prev =>
+@@ -191,6 +197,7 @@ export default function History() {
+     router.push(`/screen/History/${id}`);
+   };
+ 
++  // Exclui definitivamente as medições selecionadas, limpa a seleção e recarrega a lista.
+   const handleDelete = async () => {
+     if (!user || selectedIds.length === 0) {
+       return;
+diff --git a/src/app/screen/Profile/index.tsx b/src/app/screen/Profile/index.tsx
+index 0566068..fa39a13 100644
+--- a/src/app/screen/Profile/index.tsx
++++ b/src/app/screen/Profile/index.tsx
+@@ -34,12 +34,14 @@ const LABEL_DO_TIPO_DE_DIABETES: Record<string, string> = {
+   outro: 'Outro',
+ };
+ 
++// Tela de perfil com os dados do usuário e as opções de notificações, editar perfil, exportar dados, sobre e sair.
+ export default function Profile() {
+   const insets = useSafeAreaInsets();
+   const { user, updateUser, logout } = useAuth();
+   const [isUpdatingNotifications, setIsUpdatingNotifications] = useState(false);
+   const [isExporting, setIsExporting] = useState(false);
+ 
++  // Liga ou desliga os lembretes: pede permissão quando necessário, salva a preferência no banco e agenda ou cancela as notificações.
+   async function handleToggleNotifications(novoValor: boolean) {
+     if (!user || isUpdatingNotifications) {
+       return;
+@@ -83,6 +85,7 @@ export default function Profile() {
+     }
+   }
+ 
++  // Gera e compartilha o PDF com o histórico do usuário, bloqueando novos cliques enquanto o arquivo está sendo criado.
+   async function handleExportarDados() {
+     if (!user || isExporting) {
+       return;
+diff --git a/src/app/screen/_layout.tsx b/src/app/screen/_layout.tsx
+index 082389c..c914527 100644
+--- a/src/app/screen/_layout.tsx
++++ b/src/app/screen/_layout.tsx
+@@ -5,6 +5,7 @@ import { colors } from "@/theme/colors";
+ import TabBar from "@/components/TabBar";
+ import { StatusBar } from "expo-status-bar";
+ 
++// Layout das telas internas do app (Dashboard, Histórico, Perfil, etc.), que adiciona a barra de navegação inferior sobre o Stack.
+ export default function Layout() {
+   return (
+         <View style={{ flex: 1, backgroundColor: colors.black }}>
+diff --git a/src/components/AbstractGradient/index.tsx b/src/components/AbstractGradient/index.tsx
+index 415e534..1f1dc2a 100644
+--- a/src/components/AbstractGradient/index.tsx
++++ b/src/components/AbstractGradient/index.tsx
+@@ -28,6 +28,7 @@ type AbstractGradientProps = {
+   children?: React.ReactNode;
+ };
+ 
++// Renderiza o fundo decorativo com gradiente radial e blur usado no topo das telas.
+ export default function AbstractGradient({
+   height = 400,
+   borderRadius = 0,
+diff --git a/src/components/Alert/index.tsx b/src/components/Alert/index.tsx
+index 52c0d44..5fd4032 100644
+--- a/src/components/Alert/index.tsx
++++ b/src/components/Alert/index.tsx
+@@ -10,6 +10,7 @@ type Props = {
+   text: string
+ }
+ 
++// Exibe um cartão de alerta com ícone, título e texto de apoio.
+ export default function Alert({ icon, title, text }: Props) {
+   return (
+     <View style={styles.container}>
+diff --git a/src/components/BackButton/index.tsx b/src/components/BackButton/index.tsx
+index 1cddb94..e9813ad 100644
+--- a/src/components/BackButton/index.tsx
++++ b/src/components/BackButton/index.tsx
+@@ -5,6 +5,7 @@ import { colors } from '@/theme/colors';
+ import { styles } from './style'
+ import { BlurView } from 'expo-blur';
+ 
++// Botão de voltar reutilizável que repassa todas as props de TouchableOpacity recebidas.
+ export default function BackButton({ ...rest }: TouchableOpacityProps) {
+   return (
+     <TouchableOpacity
+diff --git a/src/components/Button/index.tsx b/src/components/Button/index.tsx
+index f5cd578..745c073 100644
+--- a/src/components/Button/index.tsx
++++ b/src/components/Button/index.tsx
+@@ -14,6 +14,7 @@ type Props = TouchableOpacityProps & {
+   style?: StyleProp<ViewStyle>
+ }
+ 
++// Botão reutilizável com título, cor de fundo/borda customizáveis e ícone opcional.
+ export default function Button({
+   title,
+   haveIcon = false,
+diff --git a/src/components/Card/index.tsx b/src/components/Card/index.tsx
+index baa16b1..041f4e3 100644
+--- a/src/components/Card/index.tsx
++++ b/src/components/Card/index.tsx
+@@ -16,6 +16,7 @@ type Props = {
+   onLongPress?: () => void;
+ };
+ 
++// Cartão base reutilizável usado como container visual em várias telas do app.
+ export default function Card({
+   level,
+   glucoseLevel,
+diff --git a/src/components/CardProfile/index.tsx b/src/components/CardProfile/index.tsx
+index 9cbebdb..93643cd 100644
+--- a/src/components/CardProfile/index.tsx
++++ b/src/components/CardProfile/index.tsx
+@@ -15,6 +15,7 @@ type Props = TouchableOpacityProps & {
+   onToggleChange?: (value: boolean) => void,
+ }
+ 
++// Linha de opção da tela de Perfil com ícone, texto e um switch opcional (ex: ativar/desativar notificações).
+ export default function CardProfile({ icon, text, info, toggleValue, onToggleChange, ...rest }: Props) {
+   const isToggle = onToggleChange !== undefined;
+ 
+diff --git a/src/components/DateTimeInput/index.tsx b/src/components/DateTimeInput/index.tsx
+index ee529d5..2f0ef40 100644
+--- a/src/components/DateTimeInput/index.tsx
++++ b/src/components/DateTimeInput/index.tsx
+@@ -25,6 +25,7 @@ const ICON_BY_MODE: Record<DateTimeInputMode, keyof typeof Ionicons.glyphMap> =
+   time: 'time-outline',
+ };
+ 
++// Formata o valor selecionado como data (dd/mm/aaaa) ou hora (hh:mm) conforme o modo, ou retorna null se não houver valor.
+ function formatValue(mode: DateTimeInputMode, value: Date | null | undefined) {
+   if (!value) return null;
+ 
+@@ -35,6 +36,7 @@ function formatValue(mode: DateTimeInputMode, value: Date | null | undefined) {
+   return value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+ }
+ 
++// Campo de input que abre um seletor nativo de data ou hora, com comportamento diferente para Android (picker nativo) e iOS (modal com spinner).
+ export function DateTimeInput({
+   mode,
+   value,
+@@ -51,11 +53,13 @@ export function DateTimeInput({
+   const displayValue = formatValue(mode, value);
+   const fallbackPlaceholder = mode === 'date' ? 'Selecionar data' : 'Selecionar hora';
+ 
++  // Abre o seletor, começando com o valor atual (ou a data de hoje, se ainda não houver valor).
+   function openPicker() {
+     setDraftValue(value ?? new Date());
+     setPickerVisible(true);
+   }
+ 
++  // Fecha o seletor sem confirmar nenhuma alteração.
+   function closePicker() {
+     setPickerVisible(false);
+   }
+@@ -75,6 +79,7 @@ export function DateTimeInput({
+     }
+   }
+ 
++  // Confirma o valor escolhido no spinner do iOS, repassando-o para o onChange e fechando o modal.
+   function confirmIOSSelection() {
+     onChange(draftValue);
+     closePicker();
+diff --git a/src/components/DiabetesTypeSelector/index.tsx b/src/components/DiabetesTypeSelector/index.tsx
+index 928ff8e..3f43551 100644
+--- a/src/components/DiabetesTypeSelector/index.tsx
++++ b/src/components/DiabetesTypeSelector/index.tsx
+@@ -45,6 +45,7 @@ interface DiabetesTypeSelectorProps {
+   onChange?: (value: DiabetesType) => void;
+ }
+ 
++// Lista de cartões seletores para o usuário escolher o tipo de diabetes (Tipo 1, Tipo 2, Gestacional ou Outro).
+ export function DiabetesTypeSelector({ value, onChange }: DiabetesTypeSelectorProps) {
+   const [internalValue, setInternalValue] = useState<DiabetesType>('tipo1');
+   const selected = value ?? internalValue;
+diff --git a/src/components/Dropdown/index.tsx b/src/components/Dropdown/index.tsx
+index d3a765b..7cc2ebc 100644
+--- a/src/components/Dropdown/index.tsx
++++ b/src/components/Dropdown/index.tsx
+@@ -29,6 +29,7 @@ type Props<T extends string | number> = {
+   itemSeparatorStyle?: StyleProp<ViewStyle>;
+ };
+ 
++// Dropdown genérico e estilizável, reaproveitando a lib react-native-dropdown-picker com estilos padrão do app.
+ export default function Dropdown<T extends string | number>({
+   value,
+   onChange,
+diff --git a/src/components/Filter/index.tsx b/src/components/Filter/index.tsx
+index bbb3074..6cf11aa 100644
+--- a/src/components/Filter/index.tsx
++++ b/src/components/Filter/index.tsx
+@@ -10,6 +10,7 @@ type Props = {
+   onChange: (filter: FilterType | null) => void;
+ };
+ 
++// Barra de filtro por período (ex: usada no Histórico para trocar entre 7 dias, 3 meses e 6 meses).
+ export default function Filter({ value, onChange }: Props) {
+ 
+   const handleFilter = (filter: FilterType) => {
+diff --git a/src/components/Header/index.tsx b/src/components/Header/index.tsx
+index d516981..3882468 100644
+--- a/src/components/Header/index.tsx
++++ b/src/components/Header/index.tsx
+@@ -3,6 +3,7 @@ import { styles } from './style'
+ import { FontAwesome6 } from '@expo/vector-icons';
+ import { colors } from '@/theme/colors';
+ 
++// Cabeçalho fixo exibido no topo das telas principais do app.
+ export default function Header() {
+ 
+   return (
+diff --git a/src/components/HeaderSection/index.tsx b/src/components/HeaderSection/index.tsx
+index 6eea8f7..464e38a 100644
+--- a/src/components/HeaderSection/index.tsx
++++ b/src/components/HeaderSection/index.tsx
+@@ -8,6 +8,7 @@ type Props = {
+   haveSub?: boolean
+ }
+ 
++// Título de seção reutilizável, com título e subtítulo (ou só o subtítulo em destaque quando haveSub é true).
+ export default function HeaderSection({
+   subtitle,
+   title,
+diff --git a/src/components/IconProfile/index.tsx b/src/components/IconProfile/index.tsx
+index 0bb2b94..ecdd4d9 100644
+--- a/src/components/IconProfile/index.tsx
++++ b/src/components/IconProfile/index.tsx
+@@ -5,6 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
+ import { colors } from '@/theme/colors';
+ import { Icon } from '@/utils/icon';
+ 
++// Botão circular com ícone de edição, usado para acessar a edição do perfil/foto do usuário.
+ export default function IconProfile() {
+   return (
+     <TouchableOpacity activeOpacity={0.8}>
+diff --git a/src/components/Input/index.tsx b/src/components/Input/index.tsx
+index 6a2d5f6..2435eae 100644
+--- a/src/components/Input/index.tsx
++++ b/src/components/Input/index.tsx
+@@ -7,6 +7,7 @@ type Props = TextInputProps & {
+   isTextarea?: boolean
+ }
+ 
++// Campo de texto reutilizável, com rótulo opcional e suporte a modo textarea (multilinha).
+ export default function Input({ label, isTextarea = false, ...rest }: Props) {
+   return (
+     <View style={styles.container}>
+diff --git a/src/components/LIneChart/index.tsx b/src/components/LIneChart/index.tsx
+index 36bfdd0..500ba29 100644
+--- a/src/components/LIneChart/index.tsx
++++ b/src/components/LIneChart/index.tsx
+@@ -57,11 +57,13 @@ function withOpacity(hexColor: string, alpha: number) {
+ 
+ const REFERENCE_LINE_OPACITY = 0.5
+ 
++// Renderiza o gráfico de linha do histórico de glicemia, calculando o espaçamento dos rótulos e linhas de referência a partir dos dados recebidos.
+ export default function LineChart({ data = [], period = '6m' }: LineChartProps) {
+   const [chartWidth, setChartWidth] = useState(0)
+ 
+   const points = data
+ 
++  // Guarda a largura real do container do gráfico assim que ela é medida, para calcular o espaçamento correto entre os pontos.
+   const handleChartAreaLayout = (event: LayoutChangeEvent) => {
+     setChartWidth(event.nativeEvent.layout.width)
+   }
+diff --git a/src/components/MetricsPanel/index.tsx b/src/components/MetricsPanel/index.tsx
+index fdfff74..3cf2e0e 100644
+--- a/src/components/MetricsPanel/index.tsx
++++ b/src/components/MetricsPanel/index.tsx
+@@ -9,10 +9,12 @@ interface MetricsPanelProps {
+   latest: number | null;
+ }
+ 
++// Formata um valor numérico para exibição, mostrando "--" quando ele for null (sem medição ainda).
+ function formatValue(value: number | null) {
+   return value === null ? '--' : String(value);
+ }
+ 
++// Painel com as métricas do dia (última, maior, menor e média das medições de glicemia).
+ export default function MetricsPanel({ average, highest, lowest, latest }: MetricsPanelProps) {
+   return (
+     <View style={styles.container}>
+diff --git a/src/components/MoodSelector/index.tsx b/src/components/MoodSelector/index.tsx
+index 45a6baf..a14323f 100644
+--- a/src/components/MoodSelector/index.tsx
++++ b/src/components/MoodSelector/index.tsx
+@@ -20,6 +20,7 @@ interface MoodSelectorProps {
+   onChange?: (value: MoodId) => void;
+ }
+ 
++// Seletor de humor em formato de lista de opções (Feliz, Triste, Cansado, Ansioso, Estressado), baseado no componente RadioIconInput.
+ export function MoodSelector({ value, onChange }: MoodSelectorProps) {
+   const [internalValue, setInternalValue] = useState<MoodId>('happy');
+   const selected = value ?? internalValue;
+diff --git a/src/components/NumericInput/index.tsx b/src/components/NumericInput/index.tsx
+index 681a59d..70d542f 100644
+--- a/src/components/NumericInput/index.tsx
++++ b/src/components/NumericInput/index.tsx
+@@ -16,6 +16,7 @@ type NumericInputProps = {
+ const DIGIT_WIDTH = 56;
+ const DEFAULT_MAX_LENGTH = 3;
+ 
++// Campo de input só de números (usado para digitar o valor da glicemia), com sublinhado de largura fixa e formatação grande.
+ export function NumericInput({
+   value,
+   onChange,
+@@ -26,6 +27,7 @@ export function NumericInput({
+ }: NumericInputProps) {
+   const [isFocused, setIsFocused] = useState(false);
+ 
++  // Filtra o texto digitado para manter só dígitos, bloqueando texto colado, "-", "." etc.
+   function handleChangeText(text: string) {
+     // remove qualquer caractere que não seja dígito (bloqueia colar texto, "-", ".", etc.)
+     const digitsOnly = text.replace(/[^0-9]/g, '');
+diff --git a/src/components/Paginationindicator/index.tsx b/src/components/Paginationindicator/index.tsx
+index 7187ab2..329db0a 100644
+--- a/src/components/Paginationindicator/index.tsx
++++ b/src/components/Paginationindicator/index.tsx
+@@ -20,6 +20,7 @@ type DotProps = {
+   glowOpacity: number;
+ };
+ 
++// Renderiza um único traço/bolinha do indicador de paginação, animando largura, altura, cor e brilho entre os estados ativo e inativo.
+ function Dot({
+   active,
+   activeColor,
+@@ -88,6 +89,7 @@ type PaginationIndicatorProps = {
+   style?: StyleProp<ViewStyle>;
+ };
+ 
++// Indicador de paginação com traços animados que marcam a página/passo atual (não está mais em uso no fluxo de cadastro).
+ export default function PaginationIndicator({
+   total,
+   activeIndex,
+diff --git a/src/components/PieChart/index.tsx b/src/components/PieChart/index.tsx
+index 09cd742..d2710d7 100644
+--- a/src/components/PieChart/index.tsx
++++ b/src/components/PieChart/index.tsx
+@@ -56,6 +56,7 @@ function useEntranceAnimation() {
+   }))
+ }
+ 
++// Gráfico de rosca que mostra a distribuição das medições entre normais, altas e baixas, com legenda e animação de entrada.
+ export default function PieChart({ measurements = [] }: PieChartProps) {
+   const entranceStyle = useEntranceAnimation()
+ 
+diff --git a/src/components/RadioIconInput/index.tsx b/src/components/RadioIconInput/index.tsx
+index 9984b31..afcf282 100644
+--- a/src/components/RadioIconInput/index.tsx
++++ b/src/components/RadioIconInput/index.tsx
+@@ -16,6 +16,7 @@ interface RadioIconInputProps {
+   size?: number;
+ }
+ 
++// Botão circular com ícone e rótulo que funciona como opção de rádio; quando selecionado, o fundo fica emerald e o ícone preto.
+ export function RadioIconInput({
+   iconName,
+   label,
+diff --git a/src/components/RegisterButton/index.tsx b/src/components/RegisterButton/index.tsx
+index 7d366ad..398e653 100644
+--- a/src/components/RegisterButton/index.tsx
++++ b/src/components/RegisterButton/index.tsx
+@@ -5,6 +5,7 @@ import { colors } from '@/theme/colors';
+ import { styles } from './style';
+ import { router } from 'expo-router';
+ 
++// Botão flutuante de "+" que leva o usuário para a tela de registro de uma nova medição.
+ export default function RegisterButton() {
+   return (
+     <TouchableOpacity
+diff --git a/src/components/ReturnPage/index.tsx b/src/components/ReturnPage/index.tsx
+index e74ff5a..56259ab 100644
+--- a/src/components/ReturnPage/index.tsx
++++ b/src/components/ReturnPage/index.tsx
+@@ -12,6 +12,7 @@ type ReturnPageProps = {
+   subtitle?: string
+ }
+ 
++// Cabeçalho de telas internas com botão de voltar, título centralizado e subtítulo opcional.
+ export default function ReturnPage({ title, subtitle }: ReturnPageProps) {
+   return (
+     <View>
+diff --git a/src/components/Scroll/index.tsx b/src/components/Scroll/index.tsx
+index 78f0111..d845418 100644
+--- a/src/components/Scroll/index.tsx
++++ b/src/components/Scroll/index.tsx
+@@ -13,6 +13,7 @@ type Props = {
+   overlay?: ReactNode;
+ };
+ 
++// Container de rolagem padrão das telas, que ajusta o espaçamento conforme as áreas seguras e a presença da barra de navegação, e evita que o teclado cubra os inputs.
+ export default function Scroll({
+   children,
+   style = {},
+diff --git a/src/components/SelectionBar/index.tsx b/src/components/SelectionBar/index.tsx
+index 56926a0..f72b9c9 100644
+--- a/src/components/SelectionBar/index.tsx
++++ b/src/components/SelectionBar/index.tsx
+@@ -11,6 +11,7 @@ type Props = {
+   onDelete: () => void;
+ };
+ 
++// Barra que aparece no modo de seleção do histórico, mostrando quantos itens estão selecionados e oferecendo cancelar ou excluir.
+ export default function SelectionBar({
+   selectedCount,
+   onCancel,
+diff --git a/src/components/Separator/index.tsx b/src/components/Separator/index.tsx
+index a10e2c0..59be9c4 100644
+--- a/src/components/Separator/index.tsx
++++ b/src/components/Separator/index.tsx
+@@ -7,6 +7,7 @@ type Props = {
+   style?: StyleProp<ViewStyle>
+ }
+ 
++// Linha divisória fina com cor customizável, usada para separar seções na tela.
+ export default function Separator({ color, style }: Props) {
+   return (
+     <View style={[styles.container, { backgroundColor: color }, style]} />
+diff --git a/src/components/TabBar/index.tsx b/src/components/TabBar/index.tsx
+index 8ef28b6..9327072 100644
+--- a/src/components/TabBar/index.tsx
++++ b/src/components/TabBar/index.tsx
+@@ -12,6 +12,7 @@ const tabs = [
+   { name: 'person', route: '/screen/Profile' },
+ ] as const
+ 
++// Barra de navegação inferior com blur, que destaca a aba da rota atual e se esconde nas telas de tela cheia (Register, About e detalhes do histórico).
+ export default function TabBar() {
+   const pathname = usePathname()
+   const router = useRouter()
+diff --git a/src/components/TabBarIcon/index.tsx b/src/components/TabBarIcon/index.tsx
+index 9f02f47..2a2e1f6 100644
+--- a/src/components/TabBarIcon/index.tsx
++++ b/src/components/TabBarIcon/index.tsx
+@@ -11,6 +11,7 @@ type TabBarIconProps = TouchableOpacityProps & {
+   active?: boolean
+ }
+ 
++// Ícone clicável de uma aba da TabBar, com estilo diferente quando a aba está ativa.
+ export default function TabBarIcon({ name, size = 24, active = false, style, ...rest }: TabBarIconProps) {
+   return (
+     <TouchableOpacity
+diff --git a/src/contexts/AuthContext.tsx b/src/contexts/AuthContext.tsx
+index a518699..385d886 100644
+--- a/src/contexts/AuthContext.tsx
++++ b/src/contexts/AuthContext.tsx
+@@ -52,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+     restaurarSessao();
+   }, []);
+ 
++  // Sempre que o usuário logado mudar, reagenda os lembretes diários se as notificações estiverem ativadas, ou cancela todos se estiverem desativadas.
+   useEffect(() => {
+     if (!user) {
+       return;
+@@ -64,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+     }
+   }, [user]);
+ 
++  // Reagenda os lembretes toda vez que o app volta para o primeiro plano, para refletir medições feitas enquanto ele estava em segundo plano.
+   useEffect(() => {
+     const subscription = AppState.addEventListener('change', (proximoEstado) => {
+       if (proximoEstado === 'active' && user?.notifications_enabled) {
+@@ -74,15 +76,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+     return () => subscription.remove();
+   }, [user]);
+ 
++  // Guarda o usuário logado no estado e salva o id dele no dispositivo para manter a sessão entre aberturas do app.
+   async function login(usuarioLogado: Usuario) {
+     setUser(usuarioLogado);
+     await AsyncStorage.setItem(CHAVE_USUARIO_LOGADO, String(usuarioLogado.id));
+   }
+ 
++  // Atualiza os dados do usuário em memória (ex: depois de editar o perfil), sem mexer na sessão salva.
+   function updateUser(usuarioAtualizado: Usuario) {
+     setUser(usuarioAtualizado);
+   }
+ 
++  // Cancela os lembretes agendados, limpa o usuário do estado e remove o id salvo, encerrando a sessão.
+   async function logout() {
+     cancelarLembretesDeMedicao();
+     setUser(null);
+@@ -96,6 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+   );
+ }
+ 
++// Hook de acesso ao AuthContext; lança um erro se for usado fora de um <AuthProvider>.
+ export function useAuth() {
+   const context = useContext(AuthContext);
+ 
+diff --git a/src/contexts/RegisterFlowContext.tsx b/src/contexts/RegisterFlowContext.tsx
+index 8af5703..841a0a2 100644
+--- a/src/contexts/RegisterFlowContext.tsx
++++ b/src/contexts/RegisterFlowContext.tsx
+@@ -38,6 +38,7 @@ export function RegisterFlowProvider({ children }: { children: React.ReactNode }
+   const [data, setData] = useState<RegisterFlowData>(initialData);
+   const [isEditing, setIsEditing] = useState(false);
+ 
++  // Mescla os campos recebidos com os dados já preenchidos nas telas anteriores do cadastro.
+   function updateData(partial: Partial<RegisterFlowData>) {
+     setData((current) => ({ ...current, ...partial }));
+   }
+@@ -49,6 +50,7 @@ export function RegisterFlowProvider({ children }: { children: React.ReactNode }
+   );
+ }
+ 
++// Hook de acesso ao RegisterFlowContext; lança um erro se for usado fora de um <RegisterFlowProvider>.
+ export function useRegisterFlow() {
+   const context = useContext(RegisterFlowContext);
+ 
+diff --git a/src/database/moods.ts b/src/database/moods.ts
+index a1eed65..3d94fbd 100644
+--- a/src/database/moods.ts
++++ b/src/database/moods.ts
+@@ -16,6 +16,7 @@ export interface Humor {
+   name: string;
+ }
+ 
++// Busca no banco todos os humores cadastrados na tabela "moods", ordenados por id, e retorna a lista tipada.
+ export async function listarHumores(): Promise<Humor[]> {
+   const resultado = await turso.execute({
+     sql: `
+diff --git a/src/services/exportarDados.ts b/src/services/exportarDados.ts
+index 21d7725..93743d6 100644
+--- a/src/services/exportarDados.ts
++++ b/src/services/exportarDados.ts
+@@ -59,10 +59,12 @@ function calcularIdade(dataNascimentoISO: string): number {
+   return idade;
+ }
+ 
++// Formata uma data ISO no padrão brasileiro dd/mm/aaaa.
+ function formatarData(dataISO: string): string {
+   return new Date(dataISO).toLocaleDateString('pt-BR');
+ }
+ 
++// Formata uma data ISO como horário no padrão hh:mm.
+ function formatarHorario(dataISO: string): string {
+   return new Date(dataISO).toLocaleTimeString('pt-BR', {
+     hour: '2-digit',
+@@ -70,6 +72,7 @@ function formatarHorario(dataISO: string): string {
+   });
+ }
+ 
++// Monta a data e hora atuais formatadas, usadas no rodapé "Gerado em" do relatório.
+ function formatarDataEHorarioDeGeracao(): string {
+   return new Date().toLocaleString('pt-BR', {
+     day: '2-digit',
+@@ -97,6 +100,7 @@ function escaparHtml(texto: string): string {
+     .replace(/>/g, '&gt;');
+ }
+ 
++// Monta uma linha <tr> da tabela do PDF com os dados de uma medição já traduzidos e formatados para exibição.
+ function montarLinhaDaTabela(
+   medicao: Medicao,
+   nomeDoHumorPorId: Map<number, string>
+@@ -134,6 +138,7 @@ function montarLinhaDaTabela(
+   `;
+ }
+ 
++// Monta o HTML completo do relatório em PDF (cabeçalho, dados do paciente e tabela de medições) a partir dos dados do usuário, medições e humores.
+ function montarHtmlDoRelatorio(
+   usuario: Usuario,
+   medicoes: Medicao[],
+diff --git a/src/services/notifications.ts b/src/services/notifications.ts
+index 47c0b27..90cd72f 100644
+--- a/src/services/notifications.ts
++++ b/src/services/notifications.ts
+@@ -24,6 +24,7 @@ const JANELA_DE_TOLERANCIA_EM_HORAS = 1;
+ // notificações que o app venha a ter no futuro).
+ const PREFIXO_DO_IDENTIFICADOR = 'glyko-lembrete-medicao';
+ 
++// Monta o identificador único da notificação de um horário específico, juntando o prefixo fixo com a hora (ex: "glyko-lembrete-medicao-8h").
+ function identificadorDoLembrete(hora: number): string {
+   return `${PREFIXO_DO_IDENTIFICADOR}-${hora}h`;
+ }
+diff --git a/src/utils/getCurrentDate.ts b/src/utils/getCurrentDate.ts
+index 37067f2..3633628 100644
+--- a/src/utils/getCurrentDate.ts
++++ b/src/utils/getCurrentDate.ts
+@@ -1,3 +1,4 @@
++// Pega a data atual do dispositivo e devolve o dia da semana, o número do dia e o mês, todos já escritos por extenso em português.
+ export function getCurrentDate() {
+   const date = new Date()
+ 
+diff --git a/src/utils/glucose.ts b/src/utils/glucose.ts
+index 21c16a7..df972af 100644
+--- a/src/utils/glucose.ts
++++ b/src/utils/glucose.ts
+@@ -1,3 +1,4 @@
++// Classifica um valor de glicemia como 'low' (abaixo de 70), 'high' (acima de 140) ou 'normal' (entre os dois).
+ export function classificarGlicemia(valor: number) {
+   if (valor < 70) return 'low';
+   if (valor > 140) return 'high';
+diff --git a/src/utils/icon.tsx b/src/utils/icon.tsx
+index aef3e77..9b5db05 100644
+--- a/src/utils/icon.tsx
++++ b/src/utils/icon.tsx
+@@ -65,6 +65,7 @@ const iconSvgs: Record<IconName, string> = {
+   info: infoSvgXml
+ }
+ 
++// Componente que renderiza o SVG correspondente ao nome do ícone pedido, no tamanho informado, avisando no console se o nome não existir.
+ export function Icon({ name, size = 24 }: IconProps) {
+   const svg = iconSvgs[name]
+ 

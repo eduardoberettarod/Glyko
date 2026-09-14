@@ -28,6 +28,7 @@ type AbstractGradientProps = {
   children?: React.ReactNode;
 };
 
+// Renderiza o fundo decorativo com gradiente radial e blur usado no topo das telas.
 export default function AbstractGradient({
   height = 400,
   borderRadius = 0,

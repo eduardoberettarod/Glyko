@@ -5,6 +5,7 @@ import { colors } from '@/theme/colors';
 import { styles } from './style';
 import { router } from 'expo-router';
 
+// Botão flutuante de "+" que leva o usuário para a tela de registro de uma nova medição.
 export default function RegisterButton() {
   return (
     <TouchableOpacity

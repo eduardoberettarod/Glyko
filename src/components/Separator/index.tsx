@@ -7,6 +7,7 @@ type Props = {
   style?: StyleProp<ViewStyle>
 }
 
+// Linha divisória fina com cor customizável, usada para separar seções na tela.
 export default function Separator({ color, style }: Props) {
   return (
     <View style={[styles.container, { backgroundColor: color }, style]} />

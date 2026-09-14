@@ -57,11 +57,13 @@ function withOpacity(hexColor: string, alpha: number) {
 
 const REFERENCE_LINE_OPACITY = 0.5
 
+// Renderiza o gráfico de linha do histórico de glicemia, calculando o espaçamento dos rótulos e linhas de referência a partir dos dados recebidos.
 export default function LineChart({ data = [], period = '6m' }: LineChartProps) {
   const [chartWidth, setChartWidth] = useState(0)
 
   const points = data
 
+  // Guarda a largura real do container do gráfico assim que ela é medida, para calcular o espaçamento correto entre os pontos.
   const handleChartAreaLayout = (event: LayoutChangeEvent) => {
     setChartWidth(event.nativeEvent.layout.width)
   }

@@ -16,6 +16,7 @@ type NumericInputProps = {
 const DIGIT_WIDTH = 56;
 const DEFAULT_MAX_LENGTH = 3;
 
+// Campo de input só de números (usado para digitar o valor da glicemia), com sublinhado de largura fixa e formatação grande.
 export function NumericInput({
   value,
   onChange,
@@ -26,6 +27,7 @@ export function NumericInput({
 }: NumericInputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
+  // Filtra o texto digitado para manter só dígitos, bloqueando texto colado, "-", "." etc.
   function handleChangeText(text: string) {
     // remove qualquer caractere que não seja dígito (bloqueia colar texto, "-", ".", etc.)
     const digitsOnly = text.replace(/[^0-9]/g, '');

@@ -15,6 +15,7 @@ type Props = TouchableOpacityProps & {
   onToggleChange?: (value: boolean) => void,
 }
 
+// Linha de opção da tela de Perfil com ícone, texto e um switch opcional (ex: ativar/desativar notificações).
 export default function CardProfile({ icon, text, info, toggleValue, onToggleChange, ...rest }: Props) {
   const isToggle = onToggleChange !== undefined;
 

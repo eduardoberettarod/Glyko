@@ -22,6 +22,7 @@ import { criarUsuario, atualizarUsuario } from '@/database/users';
 const REGISTER_TOTAL_STEPS = 3;
 const REGISTER_CURRENT_STEP = 0; // esta é a 1ª tela do fluxo
 
+// Último passo do cadastro: escolhe o tipo de diabetes e, ao confirmar, cria o usuário no banco (ou salva as alterações, se estiver editando o perfil).
 export default function Diabetes() {
 
   const router = useRouter();

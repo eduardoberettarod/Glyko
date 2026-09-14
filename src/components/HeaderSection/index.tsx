@@ -8,6 +8,7 @@ type Props = {
   haveSub?: boolean
 }
 
+// Título de seção reutilizável, com título e subtítulo (ou só o subtítulo em destaque quando haveSub é true).
 export default function HeaderSection({
   subtitle,
   title,

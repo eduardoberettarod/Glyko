@@ -38,6 +38,7 @@ export function RegisterFlowProvider({ children }: { children: React.ReactNode }
   const [data, setData] = useState<RegisterFlowData>(initialData);
   const [isEditing, setIsEditing] = useState(false);
 
+  // Mescla os campos recebidos com os dados já preenchidos nas telas anteriores do cadastro.
   function updateData(partial: Partial<RegisterFlowData>) {
     setData((current) => ({ ...current, ...partial }));
   }
@@ -49,6 +50,7 @@ export function RegisterFlowProvider({ children }: { children: React.ReactNode }
   );
 }
 
+// Hook de acesso ao RegisterFlowContext; lança um erro se for usado fora de um <RegisterFlowProvider>.
 export function useRegisterFlow() {
   const context = useContext(RegisterFlowContext);
 

@@ -9,6 +9,7 @@ import Button from '@/components/Button';
 import AbstractGradient from '@/components/AbstractGradient'
 import { useAuth } from '@/contexts/AuthContext';
 
+// Tela inicial de boas-vindas: redireciona direto para o Dashboard se já houver sessão salva, senão mostra os botões de criar conta e login.
 export default function Index() {
 
   const router = useRouter();

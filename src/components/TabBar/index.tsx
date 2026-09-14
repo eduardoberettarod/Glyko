@@ -12,6 +12,7 @@ const tabs = [
   { name: 'person', route: '/screen/Profile' },
 ] as const
 
+// Barra de navegação inferior com blur, que destaca a aba da rota atual e se esconde nas telas de tela cheia (Register, About e detalhes do histórico).
 export default function TabBar() {
   const pathname = usePathname()
   const router = useRouter()

@@ -34,12 +34,14 @@ const LABEL_DO_TIPO_DE_DIABETES: Record<string, string> = {
   outro: 'Outro',
 };
 
+// Tela de perfil com os dados do usuário e as opções de notificações, editar perfil, exportar dados, sobre e sair.
 export default function Profile() {
   const insets = useSafeAreaInsets();
   const { user, updateUser, logout } = useAuth();
   const [isUpdatingNotifications, setIsUpdatingNotifications] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
+  // Liga ou desliga os lembretes: pede permissão quando necessário, salva a preferência no banco e agenda ou cancela as notificações.
   async function handleToggleNotifications(novoValor: boolean) {
     if (!user || isUpdatingNotifications) {
       return;
@@ -83,6 +85,7 @@ export default function Profile() {
     }
   }
 
+  // Gera e compartilha o PDF com o histórico do usuário, bloqueando novos cliques enquanto o arquivo está sendo criado.
   async function handleExportarDados() {
     if (!user || isExporting) {
       return;

@@ -12,6 +12,7 @@ import BackButton from '@/components/BackButton';
 import { useAuth } from '@/contexts/AuthContext';
 import { autenticarUsuario } from '@/database/users';
 
+// Tela de login com campos de e-mail e senha.
 export default function Login() {
 
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function Login() {
 
   const canSubmit = email.trim().length > 0 && password.length > 0 && !isSubmitting;
 
+  // Valida as credenciais no banco e, se estiverem corretas, salva a sessão e leva o usuário ao Dashboard; senão mostra um alerta de erro.
   async function handleLogin() {
     if (!canSubmit) {
       return;

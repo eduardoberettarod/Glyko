@@ -16,6 +16,7 @@ interface RadioIconInputProps {
   size?: number;
 }
 
+// Botão circular com ícone e rótulo que funciona como opção de rádio; quando selecionado, o fundo fica emerald e o ícone preto.
 export function RadioIconInput({
   iconName,
   label,

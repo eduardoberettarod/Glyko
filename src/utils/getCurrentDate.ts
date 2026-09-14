@@ -1,3 +1,4 @@
+// Pega a data atual do dispositivo e devolve o dia da semana, o número do dia e o mês, todos já escritos por extenso em português.
 export function getCurrentDate() {
   const date = new Date()
 

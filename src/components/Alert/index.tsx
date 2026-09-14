@@ -10,6 +10,7 @@ type Props = {
   text: string
 }
 
+// Exibe um cartão de alerta com ícone, título e texto de apoio.
 export default function Alert({ icon, title, text }: Props) {
   return (
     <View style={styles.container}>

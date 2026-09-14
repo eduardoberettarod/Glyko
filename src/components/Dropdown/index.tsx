@@ -29,6 +29,7 @@ type Props<T extends string | number> = {
   itemSeparatorStyle?: StyleProp<ViewStyle>;
 };
 
+// Dropdown genérico e estilizável, reaproveitando a lib react-native-dropdown-picker com estilos padrão do app.
 export default function Dropdown<T extends string | number>({
   value,
   onChange,

@@ -11,6 +11,7 @@ type Props = {
   onDelete: () => void;
 };
 
+// Barra que aparece no modo de seleção do histórico, mostrando quantos itens estão selecionados e oferecendo cancelar ou excluir.
 export default function SelectionBar({
   selectedCount,
   onCancel,

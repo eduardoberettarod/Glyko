@@ -7,6 +7,7 @@ type Props = TextInputProps & {
   isTextarea?: boolean
 }
 
+// Campo de texto reutilizável, com rótulo opcional e suporte a modo textarea (multilinha).
 export default function Input({ label, isTextarea = false, ...rest }: Props) {
   return (
     <View style={styles.container}>

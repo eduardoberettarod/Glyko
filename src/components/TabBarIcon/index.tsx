@@ -11,6 +11,7 @@ type TabBarIconProps = TouchableOpacityProps & {
   active?: boolean
 }
 
+// Ícone clicável de uma aba da TabBar, com estilo diferente quando a aba está ativa.
 export default function TabBarIcon({ name, size = 24, active = false, style, ...rest }: TabBarIconProps) {
   return (
     <TouchableOpacity

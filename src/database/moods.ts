@@ -16,6 +16,7 @@ export interface Humor {
   name: string;
 }
 
+// Busca no banco todos os humores cadastrados na tabela "moods", ordenados por id, e retorna a lista tipada.
 export async function listarHumores(): Promise<Humor[]> {
   const resultado = await turso.execute({
     sql: `

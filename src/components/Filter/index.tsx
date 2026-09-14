@@ -10,6 +10,7 @@ type Props = {
   onChange: (filter: FilterType | null) => void;
 };
 
+// Barra de filtro por período (ex: usada no Histórico para trocar entre 7 dias, 3 meses e 6 meses).
 export default function Filter({ value, onChange }: Props) {
 
   const handleFilter = (filter: FilterType) => {

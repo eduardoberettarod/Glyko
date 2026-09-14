@@ -52,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     restaurarSessao();
   }, []);
 
+  // Sempre que o usuário logado mudar, reagenda os lembretes diários se as notificações estiverem ativadas, ou cancela todos se estiverem desativadas.
   useEffect(() => {
     if (!user) {
       return;
@@ -64,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
+  // Reagenda os lembretes toda vez que o app volta para o primeiro plano, para refletir medições feitas enquanto ele estava em segundo plano.
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (proximoEstado) => {
       if (proximoEstado === 'active' && user?.notifications_enabled) {
@@ -74,15 +76,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.remove();
   }, [user]);
 
+  // Guarda o usuário logado no estado e salva o id dele no dispositivo para manter a sessão entre aberturas do app.
   async function login(usuarioLogado: Usuario) {
     setUser(usuarioLogado);
     await AsyncStorage.setItem(CHAVE_USUARIO_LOGADO, String(usuarioLogado.id));
   }
 
+  // Atualiza os dados do usuário em memória (ex: depois de editar o perfil), sem mexer na sessão salva.
   function updateUser(usuarioAtualizado: Usuario) {
     setUser(usuarioAtualizado);
   }
 
+  // Cancela os lembretes agendados, limpa o usuário do estado e remove o id salvo, encerrando a sessão.
   async function logout() {
     cancelarLembretesDeMedicao();
     setUser(null);
@@ -96,6 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Hook de acesso ao AuthContext; lança um erro se for usado fora de um <AuthProvider>.
 export function useAuth() {
   const context = useContext(AuthContext);
 

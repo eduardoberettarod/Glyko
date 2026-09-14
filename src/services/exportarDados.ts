@@ -59,10 +59,12 @@ function calcularIdade(dataNascimentoISO: string): number {
   return idade;
 }
 
+// Formata uma data ISO no padrão brasileiro dd/mm/aaaa.
 function formatarData(dataISO: string): string {
   return new Date(dataISO).toLocaleDateString('pt-BR');
 }
 
+// Formata uma data ISO como horário no padrão hh:mm.
 function formatarHorario(dataISO: string): string {
   return new Date(dataISO).toLocaleTimeString('pt-BR', {
     hour: '2-digit',
@@ -70,6 +72,7 @@ function formatarHorario(dataISO: string): string {
   });
 }
 
+// Monta a data e hora atuais formatadas, usadas no rodapé "Gerado em" do relatório.
 function formatarDataEHorarioDeGeracao(): string {
   return new Date().toLocaleString('pt-BR', {
     day: '2-digit',
@@ -97,6 +100,7 @@ function escaparHtml(texto: string): string {
     .replace(/>/g, '&gt;');
 }
 
+// Monta uma linha <tr> da tabela do PDF com os dados de uma medição já traduzidos e formatados para exibição.
 function montarLinhaDaTabela(
   medicao: Medicao,
   nomeDoHumorPorId: Map<number, string>
@@ -134,6 +138,7 @@ function montarLinhaDaTabela(
   `;
 }
 
+// Monta o HTML completo do relatório em PDF (cabeçalho, dados do paciente e tabela de medições) a partir dos dados do usuário, medições e humores.
 function montarHtmlDoRelatorio(
   usuario: Usuario,
   medicoes: Medicao[],

@@ -24,6 +24,7 @@ const JANELA_DE_TOLERANCIA_EM_HORAS = 1;
 // notificações que o app venha a ter no futuro).
 const PREFIXO_DO_IDENTIFICADOR = 'glyko-lembrete-medicao';
 
+// Monta o identificador único da notificação de um horário específico, juntando o prefixo fixo com a hora (ex: "glyko-lembrete-medicao-8h").
 function identificadorDoLembrete(hora: number): string {
   return `${PREFIXO_DO_IDENTIFICADOR}-${hora}h`;
 }

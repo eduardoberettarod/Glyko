@@ -15,6 +15,7 @@ import { useRegisterFlow } from '@/contexts/RegisterFlowContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { DiabetesType } from '@/components/DiabetesTypeSelector';
 
+// Primeiro passo do cadastro: coleta nome, sobrenome e data de nascimento (ou pré-preenche esses campos quando vindo da edição de perfil).
 export default function Index() {
 
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function Index() {
 
   // Veio da tela de Perfil ("Editar Perfil"): carrega os dados atuais
   // do usuário logado no formulário em vez de começar em branco.
+  // Se a tela foi aberta em modo edição, carrega os dados do usuário logado no formulário em vez de começar em branco.
   useEffect(() => {
     if (params.edit === '1' && user && !isEditing) {
       setIsEditing(true);

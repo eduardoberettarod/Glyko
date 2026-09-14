@@ -56,6 +56,7 @@ function useEntranceAnimation() {
   }))
 }
 
+// Gráfico de rosca que mostra a distribuição das medições entre normais, altas e baixas, com legenda e animação de entrada.
 export default function PieChart({ measurements = [] }: PieChartProps) {
   const entranceStyle = useEntranceAnimation()
 

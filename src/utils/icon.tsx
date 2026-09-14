@@ -65,6 +65,7 @@ const iconSvgs: Record<IconName, string> = {
   info: infoSvgXml
 }
 
+// Componente que renderiza o SVG correspondente ao nome do ícone pedido, no tamanho informado, avisando no console se o nome não existir.
 export function Icon({ name, size = 24 }: IconProps) {
   const svg = iconSvgs[name]
 

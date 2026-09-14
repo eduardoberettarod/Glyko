@@ -5,6 +5,7 @@ import { colors } from '@/theme/colors';
 import { styles } from './style'
 import { BlurView } from 'expo-blur';
 
+// Botão de voltar reutilizável que repassa todas as props de TouchableOpacity recebidas.
 export default function BackButton({ ...rest }: TouchableOpacityProps) {
   return (
     <TouchableOpacity

@@ -12,6 +12,7 @@ type ReturnPageProps = {
   subtitle?: string
 }
 
+// Cabeçalho de telas internas com botão de voltar, título centralizado e subtítulo opcional.
 export default function ReturnPage({ title, subtitle }: ReturnPageProps) {
   return (
     <View>

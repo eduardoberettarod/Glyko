@@ -20,6 +20,7 @@ interface MoodSelectorProps {
   onChange?: (value: MoodId) => void;
 }
 
+// Seletor de humor em formato de lista de opções (Feliz, Triste, Cansado, Ansioso, Estressado), baseado no componente RadioIconInput.
 export function MoodSelector({ value, onChange }: MoodSelectorProps) {
   const [internalValue, setInternalValue] = useState<MoodId>('happy');
   const selected = value ?? internalValue;

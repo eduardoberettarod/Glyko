@@ -25,6 +25,7 @@ const ICON_BY_MODE: Record<DateTimeInputMode, keyof typeof Ionicons.glyphMap> = 
   time: 'time-outline',
 };
 
+// Formata o valor selecionado como data (dd/mm/aaaa) ou hora (hh:mm) conforme o modo, ou retorna null se não houver valor.
 function formatValue(mode: DateTimeInputMode, value: Date | null | undefined) {
   if (!value) return null;
 
@@ -35,6 +36,7 @@ function formatValue(mode: DateTimeInputMode, value: Date | null | undefined) {
   return value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
+// Campo de input que abre um seletor nativo de data ou hora, com comportamento diferente para Android (picker nativo) e iOS (modal com spinner).
 export function DateTimeInput({
   mode,
   value,
@@ -51,11 +53,13 @@ export function DateTimeInput({
   const displayValue = formatValue(mode, value);
   const fallbackPlaceholder = mode === 'date' ? 'Selecionar data' : 'Selecionar hora';
 
+  // Abre o seletor, começando com o valor atual (ou a data de hoje, se ainda não houver valor).
   function openPicker() {
     setDraftValue(value ?? new Date());
     setPickerVisible(true);
   }
 
+  // Fecha o seletor sem confirmar nenhuma alteração.
   function closePicker() {
     setPickerVisible(false);
   }
@@ -75,6 +79,7 @@ export function DateTimeInput({
     }
   }
 
+  // Confirma o valor escolhido no spinner do iOS, repassando-o para o onChange e fechando o modal.
   function confirmIOSSelection() {
     onChange(draftValue);
     closePicker();

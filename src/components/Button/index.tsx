@@ -14,6 +14,7 @@ type Props = TouchableOpacityProps & {
   style?: StyleProp<ViewStyle>
 }
 
+// Botão reutilizável com título, cor de fundo/borda customizáveis e ícone opcional.
 export default function Button({
   title,
   haveIcon = false,

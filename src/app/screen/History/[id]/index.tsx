@@ -50,16 +50,19 @@ const MESES = [
   'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro',
 ];
 
+// Formata uma data ISO por extenso, no padrão "Quinta, 10 de setembro".
 function dataFormatada(dataISO: string) {
   const data = new Date(dataISO);
   return `${DIAS_DA_SEMANA[data.getDay()]}, ${data.getDate()} de ${MESES[data.getMonth()]}`;
 }
 
+// Formata uma data ISO como horário no padrão hh:mm.
 function horaFormatada(dataISO: string) {
   const data = new Date(dataISO);
   return data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
+// Tela de detalhe de uma medição, mostrando valor, data, hora, humor, contexto e observação, com opções de editar e excluir.
 export default function DetalheDaMedicao() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -69,6 +72,7 @@ export default function DetalheDaMedicao() {
   const [humor, setHumor] = useState<Humor | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Busca a medição pelo id da rota junto com a lista de humores, e volta para a tela anterior se der erro.
   const carregarMedicao = useCallback(async () => {
     if (!user || !id) {
       return;
@@ -98,6 +102,7 @@ export default function DetalheDaMedicao() {
     }, [carregarMedicao])
   );
 
+  // Abre um alerta pedindo confirmação antes de apagar a medição, já que a exclusão é definitiva.
   function confirmarExclusao() {
     Alert.alert(
       'Excluir registro?',
@@ -109,6 +114,7 @@ export default function DetalheDaMedicao() {
     );
   }
 
+  // Apaga a medição do banco e volta para o histórico, avisando se a exclusão falhar.
   async function handleExcluir() {
     if (!user || !medicao) {
       return;
@@ -122,6 +128,7 @@ export default function DetalheDaMedicao() {
     }
   }
 
+  // Abre a tela de registro em modo edição, passando o id desta medição pela rota.
   function handleEditar() {
     if (!medicao) {
       return;

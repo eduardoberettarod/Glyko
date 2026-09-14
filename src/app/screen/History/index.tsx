@@ -55,6 +55,7 @@ function rotuloDoGrafico(dataISO: string, period: Period) {
     : MESES_ABREVIADOS[data.getMonth()];
 }
 
+// Formata uma data ISO como horário no padrão hh:mm, exibido em cada item da lista.
 function horarioFormatado(dataISO: string) {
   const data = new Date(dataISO);
   return data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -119,6 +120,7 @@ function agruparPorDia(medicoes: Medicao[]): GrupoDeMedicoes[] {
   return grupos;
 }
 
+// Tela de histórico: lista as medições agrupadas por dia, com gráfico, filtros de período/nível e seleção múltipla para exclusão.
 export default function History() {
 
   const insets = useSafeAreaInsets();
@@ -130,6 +132,7 @@ export default function History() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [measurements, setMeasurements] = useState<Medicao[]>([]);
 
+  // Busca no banco as medições do usuário dentro do período selecionado e guarda no estado.
   const carregarMedicoes = useCallback(async () => {
     if (!user) {
       return;
@@ -162,12 +165,14 @@ export default function History() {
     },
   ];
 
+  // Atualiza o período do filtro (7 dias, 3 meses ou 6 meses), ignorando valor nulo.
   const handlePeriodChange = (value: Period | null) => {
     if (value) {
       setPeriod(value);
     }
   };
 
+  // Ativa o modo de seleção múltipla ao segurar um item, adicionando-o à lista de selecionados.
   const handleLongPress = (id: number) => {
     setSelectedIds(prev => {
       if (prev.includes(id)) {
@@ -178,6 +183,7 @@ export default function History() {
     });
   };
 
+  // Ao tocar num item: marca/desmarca se o modo de seleção estiver ativo, senão abre a tela de detalhe da medição.
   const handlePress = (id: number) => {
     if (selectedIds.length > 0) {
       setSelectedIds(prev =>
@@ -191,6 +197,7 @@ export default function History() {
     router.push(`/screen/History/${id}`);
   };
 
+  // Exclui definitivamente as medições selecionadas, limpa a seleção e recarrega a lista.
   const handleDelete = async () => {
     if (!user || selectedIds.length === 0) {
       return;

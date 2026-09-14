@@ -9,10 +9,12 @@ interface MetricsPanelProps {
   latest: number | null;
 }
 
+// Formata um valor numérico para exibição, mostrando "--" quando ele for null (sem medição ainda).
 function formatValue(value: number | null) {
   return value === null ? '--' : String(value);
 }
 
+// Painel com as métricas do dia (última, maior, menor e média das medições de glicemia).
 export default function MetricsPanel({ average, highest, lowest, latest }: MetricsPanelProps) {
   return (
     <View style={styles.container}>

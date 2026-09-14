@@ -31,6 +31,7 @@ function classificacaoParaStatusDoPieChart(
   return 'normal';
 }
 
+// Devolve a saudação adequada ("Bom dia", "Boa tarde" ou "Boa noite") conforme a hora atual do dispositivo.
 function saudacaoPeloHorario() {
   const hora = new Date().getHours();
 
@@ -46,6 +47,7 @@ interface Metricas {
   latest: number | null;
 }
 
+// Tela principal do app, com a saudação, as métricas do dia e o gráfico de distribuição das medições das últimas 24 horas.
 export default function Index() {
 
   const insets = useSafeAreaInsets()
@@ -59,6 +61,7 @@ export default function Index() {
   });
   const [measurements, setMeasurements] = useState<GlucoseMeasurement[]>([]);
 
+  // Busca as métricas do dia e as medições do usuário, filtrando as últimas 24h para alimentar o gráfico de pizza.
   const carregarDados = useCallback(async () => {
     if (!user) {
       return;

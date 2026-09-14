@@ -12,6 +12,7 @@ import Input from '@/components/Input';
 import BackButton from '@/components/BackButton';
 import { useRegisterFlow } from '@/contexts/RegisterFlowContext';
 
+// Segundo passo do cadastro: coleta e-mail e senha (no modo edição, apenas o e-mail).
 export default function Credentials() {
 
   const router = useRouter();

@@ -13,6 +13,7 @@ type Props = {
   overlay?: ReactNode;
 };
 
+// Container de rolagem padrão das telas, que ajusta o espaçamento conforme as áreas seguras e a presença da barra de navegação, e evita que o teclado cubra os inputs.
 export default function Scroll({
   children,
   style = {},

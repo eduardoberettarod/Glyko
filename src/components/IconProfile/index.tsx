@@ -5,6 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { colors } from '@/theme/colors';
 import { Icon } from '@/utils/icon';
 
+// Botão circular com ícone de edição, usado para acessar a edição do perfil/foto do usuário.
 export default function IconProfile() {
   return (
     <TouchableOpacity activeOpacity={0.8}>

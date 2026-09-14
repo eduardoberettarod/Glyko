@@ -16,6 +16,7 @@ type Props = {
   onLongPress?: () => void;
 };
 
+// Cartão base reutilizável usado como container visual em várias telas do app.
 export default function Card({
   level,
   glucoseLevel,

@@ -199,7 +199,7 @@ export default function Profile() {
         styles.container,
         {
           paddingTop: insets.top,
-          paddingBottom: insets.bottom + 170,
+          paddingBottom: insets.bottom,
         },
       ]}
 

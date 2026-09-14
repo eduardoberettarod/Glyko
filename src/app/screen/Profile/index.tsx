@@ -157,6 +157,17 @@ export default function Profile() {
       );
     }
 
+    if (item.text === 'Sobre') {
+      return (
+        <CardProfile
+          icon={item.icon}
+          text={item.text}
+          info={item.info}
+          onPress={() => router.push('/screen/About')}
+        />
+      );
+    }
+
     return (
       <CardProfile
         icon={item.icon}

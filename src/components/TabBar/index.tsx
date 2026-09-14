@@ -24,6 +24,7 @@ export default function TabBar() {
 
   const isFullScreenPage =
     pathname === '/screen/Register' ||
+    pathname === '/screen/About' ||
     (pathname.startsWith('/screen/History/') && pathname !== '/screen/History')
 
   if (isFullScreenPage) {

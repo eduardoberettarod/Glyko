@@ -29,4 +29,14 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     textTransform: 'uppercase',
   },
+
+  subtitle: {
+    textAlign: 'center',
+    color: colors.gray[400],
+    fontFamily: fonts.hankenGrotesk.regular,
+    fontSize: 13,
+    marginTop: -4,
+    marginBottom: 8,
+    paddingHorizontal: BUTTON_SIZE,
+  },
 });

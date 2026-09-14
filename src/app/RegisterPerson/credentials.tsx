@@ -16,9 +16,11 @@ export default function Credentials() {
 
   const router = useRouter();
   const insets = useSafeAreaInsets()
-  const { data, updateData } = useRegisterFlow();
+  const { data, updateData, isEditing } = useRegisterFlow();
 
-  const canSubmit = data.email.trim().includes('@') && data.password.length >= 6;
+  const canSubmit = isEditing
+    ? data.email.trim().includes('@')
+    : data.email.trim().includes('@') && data.password.length >= 6;
 
   return (
     <View style={styles.container}>
@@ -35,12 +37,14 @@ export default function Credentials() {
       >
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.title}>Proteja sua</Text>
-            <Text style={styles.attention}>conta</Text>
+            <Text style={styles.title}>{isEditing ? 'Atualize seu' : 'Proteja sua'}</Text>
+            <Text style={styles.attention}>{isEditing ? 'e-mail' : 'conta'}</Text>
           </View>
 
           <Text style={styles.subtitle}>
-            Crie um e-mail e senha para acessar sua conta sempre que quiser monitorar sua glicemia
+            {isEditing
+              ? 'Altere o e-mail usado para acessar sua conta, se precisar'
+              : 'Crie um e-mail e senha para acessar sua conta sempre que quiser monitorar sua glicemia'}
           </Text>
         </View>
 
@@ -56,16 +60,18 @@ export default function Credentials() {
             onChangeText={(text) => updateData({ email: text })}
           />
 
-          <Input
-            label={'Senha'}
-            placeholder="Mínimo de 6 caracteres"
-            placeholderTextColor={colors.gray[500]}
-            secureTextEntry
-            autoCapitalize="none"
-            autoCorrect={false}
-            value={data.password}
-            onChangeText={(text) => updateData({ password: text })}
-          />
+          {!isEditing && (
+            <Input
+              label={'Senha'}
+              placeholder="Mínimo de 6 caracteres"
+              placeholderTextColor={colors.gray[500]}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={data.password}
+              onChangeText={(text) => updateData({ password: text })}
+            />
+          )}
         </View>
 
         <View style={styles.footer}>

@@ -20,7 +20,7 @@ import {
 import { exportarDadosDoUsuario } from '@/services/exportarDados';
 
 type DataItem = {
-  icon: 'bell' | 'ruler' | 'export' | 'star' | 'info';
+  icon: 'edit' | 'bell' | 'ruler' | 'export' | 'star' | 'info';
   text: string;
   info?: string;
   isNotificationToggle?: boolean;
@@ -109,6 +109,10 @@ export default function Profile() {
       isNotificationToggle: true,
     },
     {
+      icon: 'edit',
+      text: 'Editar Perfil',
+    },
+    {
       icon: 'export',
       text: 'Exportar Dados',
       info: isExporting ? 'Gerando...' : undefined,
@@ -127,6 +131,16 @@ export default function Profile() {
           text={item.text}
           toggleValue={!!user?.notifications_enabled}
           onToggleChange={handleToggleNotifications}
+        />
+      );
+    }
+
+    if (item.text === 'Editar Perfil') {
+      return (
+        <CardProfile
+          icon={item.icon}
+          text={item.text}
+          onPress={() => router.push({ pathname: '/RegisterPerson', params: { edit: '1' } })}
         />
       );
     }
@@ -180,7 +194,6 @@ export default function Profile() {
 
       ListHeaderComponent={
         <View style={styles.header}>
-          <IconProfile />
 
           <View style={styles.info}>
             <Text style={styles.user}>

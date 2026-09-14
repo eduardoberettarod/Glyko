@@ -127,8 +127,6 @@ export default function DetalheDaMedicao() {
       return;
     }
 
-    // A tela de Registro ainda precisa aprender a rodar em "modo edição"
-    // (receber esse id, pré-preencher os campos e chamar atualizarMedicao).
     router.push({
       pathname: '/screen/Register',
       params: { id: String(medicao.id) },

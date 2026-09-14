@@ -13,6 +13,9 @@ interface RegisterFlowData {
 interface RegisterFlowContextValue {
   data: RegisterFlowData;
   updateData: (partial: Partial<RegisterFlowData>) => void;
+  /** true quando o fluxo foi aberto a partir de "Editar Perfil" em vez do cadastro inicial. */
+  isEditing: boolean;
+  setIsEditing: (value: boolean) => void;
 }
 
 const initialData: RegisterFlowData = {
@@ -33,13 +36,14 @@ const RegisterFlowContext = createContext<RegisterFlowContextValue | undefined>(
  */
 export function RegisterFlowProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<RegisterFlowData>(initialData);
+  const [isEditing, setIsEditing] = useState(false);
 
   function updateData(partial: Partial<RegisterFlowData>) {
     setData((current) => ({ ...current, ...partial }));
   }
 
   return (
-    <RegisterFlowContext.Provider value={{ data, updateData }}>
+    <RegisterFlowContext.Provider value={{ data, updateData, isEditing, setIsEditing }}>
       {children}
     </RegisterFlowContext.Provider>
   );

@@ -6,6 +6,12 @@ export const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 18
   },
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.black,
+  },
   moodSelector: {
     marginTop: 24
   },

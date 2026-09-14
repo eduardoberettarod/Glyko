@@ -9,21 +9,30 @@ import BackButton from '../BackButton';
 
 type ReturnPageProps = {
   title: string
+  subtitle?: string
 }
 
-export default function ReturnPage({ title }: ReturnPageProps) {
+export default function ReturnPage({ title, subtitle }: ReturnPageProps) {
   return (
-    <View style={styles.container}>
-      <BackButton
-        onPress={() => router.back()}
-      />
+    <View>
+      <View style={styles.container}>
+        <BackButton
+          onPress={() => router.back()}
+        />
 
-      <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">
-        {title}
-      </Text>
+        <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">
+          {title}
+        </Text>
 
-      {/* espaçador "fantasma" pra manter o título centralizado de verdade */}
-      <View style={styles.spacer} />
+        {/* espaçador "fantasma" pra manter o título centralizado de verdade */}
+        <View style={styles.spacer} />
+      </View>
+
+      {!!subtitle && (
+        <Text style={styles.subtitle} numberOfLines={2} ellipsizeMode="tail">
+          {subtitle}
+        </Text>
+      )}
     </View>
   )
 }

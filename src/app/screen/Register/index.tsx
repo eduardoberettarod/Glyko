@@ -1,6 +1,6 @@
-import { View, Text, Alert } from 'react-native'
-import React, { useState } from 'react'
-import { useRouter } from 'expo-router';
+import { View, Text, Alert, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { styles } from './style';
 import { colors } from '@/theme/colors';
@@ -18,7 +18,7 @@ import ReturnPage from '@/components/ReturnPage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { criarMedicao } from '@/database/glucose_measurements';
+import { atualizarMedicao, buscarMedicaoPorId, criarMedicao } from '@/database/glucose_measurements';
 import { listarHumores } from '@/database/moods';
 import { sincronizarLembretesDeMedicao } from '@/services/notifications';
 
@@ -27,6 +27,8 @@ export default function Register() {
   const router = useRouter();
   const insets = useSafeAreaInsets()
   const { user } = useAuth();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const isEditing = !!id;
   const MARGIN_TOP = 30
   const MARGIN_BOTTOM = 40
   type MeasurementContext =
@@ -44,6 +46,58 @@ export default function Register() {
   const [mood, setMood] = useState<MoodId>('happy');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Só entra em loading quando existe um id: é o tempo que leva pra
+  // buscar a medição existente e pré-preencher os campos abaixo.
+  const [isLoadingMedicao, setIsLoadingMedicao] = useState(isEditing);
+
+  // Modo edição: busca a medição clicada no Histórico e usa seus
+  // dados para preencher o formulário (em vez de começar em branco).
+  useEffect(() => {
+    if (!isEditing || !user || !id) {
+      return;
+    }
+
+    let telaAtiva = true;
+
+    async function carregarMedicaoParaEdicao() {
+      try {
+        const [medicaoEncontrada, humores] = await Promise.all([
+          buscarMedicaoPorId(Number(id), user!.id),
+          listarHumores(),
+        ]);
+
+        if (!telaAtiva) {
+          return;
+        }
+
+        setGlicemia(String(medicaoEncontrada.glucose_level));
+        setMeasurementContext(medicaoEncontrada.measurement_context as MeasurementContext);
+
+        const dataDaMedicao = new Date(medicaoEncontrada.measured_at);
+        setMeasurementDate(dataDaMedicao);
+        setMeasurementTime(dataDaMedicao);
+        setNotes(medicaoEncontrada.notes ?? '');
+
+        const humorDaMedicao = humores.find((humor) => humor.id === medicaoEncontrada.mood_id);
+        if (humorDaMedicao) {
+          setMood(humorDaMedicao.name.toLowerCase() as MoodId);
+        }
+      } catch (error) {
+        Alert.alert('Não foi possível carregar', 'Tente novamente em instantes.');
+        router.back();
+      } finally {
+        if (telaAtiva) {
+          setIsLoadingMedicao(false);
+        }
+      }
+    }
+
+    carregarMedicaoParaEdicao();
+
+    return () => {
+      telaAtiva = false;
+    };
+  }, [isEditing, id, user]);
 
   const measurementContexts: { label: string; value: MeasurementContext }[] = [
     {
@@ -115,17 +169,22 @@ export default function Register() {
     try {
       const moodId = await buscarIdDoHumorSelecionado();
 
-      await criarMedicao({
-        user_id: user.id,
+      const dadosDaMedicao = {
         glucose_level: glucoseLevel,
         measurement_context: measurementContext,
         measured_at: combinarDataEHorario(measurementDate, measurementTime).toISOString(),
         mood_id: moodId,
         notes: notes.trim().length > 0 ? notes.trim() : null,
-      });
+      };
 
-      // A medição recém-salva pode "cobrir" o lembrete mais próximo
-      // (ex: medir às 11h30 cancela o lembrete das 12h).
+      if (isEditing && id) {
+        await atualizarMedicao(Number(id), user.id, dadosDaMedicao);
+      } else {
+        await criarMedicao({ user_id: user.id, ...dadosDaMedicao });
+      }
+
+      // A medição recém-salva (ou editada) pode "cobrir" o lembrete mais
+      // próximo (ex: medir às 11h30 cancela o lembrete das 12h).
       if (user.notifications_enabled) {
         sincronizarLembretesDeMedicao(user.id);
       }
@@ -136,6 +195,14 @@ export default function Register() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (isLoadingMedicao) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator color={colors.emerald[500]} />
+      </View>
+    );
   }
 
   return (
@@ -154,7 +221,12 @@ export default function Register() {
 
       <View>
         <ReturnPage
-          title={'Nova Medição'}
+          title={isEditing ? 'Editar Medição' : 'Nova Medição'}
+          subtitle={
+            isEditing
+              ? 'Altere os dados desta medição registrada'
+              : 'Registre uma nova medição de glicemia'
+          }
         />
       </View>
 
@@ -215,7 +287,13 @@ export default function Register() {
 
       <View style={styles.footer}>
         <Button
-          title={isSubmitting ? 'Salvando...' : 'Salvar Registro'}
+          title={
+            isSubmitting
+              ? 'Salvando...'
+              : isEditing
+                ? 'Salvar Alterações'
+                : 'Salvar Registro'
+          }
           borderColor={colors.gray[700]}
           colorText={colors.emerald[500]}
           color={colors.onyx}

@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
-import React from 'react'
-import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react'
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { colors } from '@/theme/colors';
 import { styles } from './style';
@@ -12,12 +12,31 @@ import AbstractGradient from '@/components/AbstractGradient'
 import Input from '@/components/Input';
 import { DateTimeInput } from '@/components/DateTimeInput';
 import { useRegisterFlow } from '@/contexts/RegisterFlowContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { DiabetesType } from '@/components/DiabetesTypeSelector';
 
 export default function Index() {
 
   const router = useRouter();
   const insets = useSafeAreaInsets()
-  const { data, updateData } = useRegisterFlow();
+  const params = useLocalSearchParams<{ edit?: string }>();
+  const { user } = useAuth();
+  const { data, updateData, isEditing, setIsEditing } = useRegisterFlow();
+
+  // Veio da tela de Perfil ("Editar Perfil"): carrega os dados atuais
+  // do usuário logado no formulário em vez de começar em branco.
+  useEffect(() => {
+    if (params.edit === '1' && user && !isEditing) {
+      setIsEditing(true);
+      updateData({
+        firstName: user.first_name,
+        lastName: user.last_name,
+        birthDate: new Date(user.birth_date),
+        email: user.email,
+        diabetesType: user.diabetes_type as DiabetesType,
+      });
+    }
+  }, [params.edit, user, isEditing]);
 
   const canSubmit =
     data.firstName.trim().length > 0 &&
@@ -39,12 +58,14 @@ export default function Index() {
       >
         <View style={styles.textContainer}>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.title}>Crie sua</Text>
-            <Text style={styles.attention}>conta</Text>
+            <Text style={styles.title}>{isEditing ? 'Edite seus' : 'Crie sua'}</Text>
+            <Text style={styles.attention}>{isEditing ? 'dados' : 'conta'}</Text>
           </View>
 
           <Text style={styles.subtitle}>
-            Preencha seus dados para começar a monitorar sua glicemia
+            {isEditing
+              ? 'Atualize suas informações pessoais sempre que precisar'
+              : 'Preencha seus dados para começar a monitorar sua glicemia'}
           </Text>
         </View>
 

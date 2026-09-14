@@ -11,21 +11,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     height: 56,
   },
-
-  button: {
-    width: BUTTON_SIZE,
-    height: BUTTON_SIZE,
-    overflow: 'hidden',
-    borderRadius: BUTTON_SIZE / 2,
-    borderWidth: 1,
-    borderColor: colors.white,
-    shadowColor: colors.translucent,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 6,
-  },
-
   blur: {
     flex: 1,
     justifyContent: 'center',

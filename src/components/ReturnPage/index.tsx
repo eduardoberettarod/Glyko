@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { styles } from './style'
 import { colors } from '@/theme/colors'
+import BackButton from '../BackButton';
 
 type ReturnPageProps = {
   title: string
@@ -13,16 +14,9 @@ type ReturnPageProps = {
 export default function ReturnPage({ title }: ReturnPageProps) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
+      <BackButton
         onPress={() => router.back()}
-        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-        activeOpacity={0.8}
-      >
-        <BlurView style={styles.blur} intensity={100} tint="dark">
-          <Feather name="chevron-left" color={colors.white} size={24} />
-        </BlurView>
-      </TouchableOpacity>
+      />
 
       <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">
         {title}

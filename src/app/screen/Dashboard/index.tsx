@@ -60,7 +60,7 @@ export default function Index() {
     latest: null,
   });
   const [measurements, setMeasurements] = useState<GlucoseMeasurement[]>([]);
-
+  const [saudacao, setSaudacao] = useState('');
   // Busca as métricas do dia e as medições do usuário, filtrando as últimas 24h para alimentar o gráfico de pizza.
   const carregarDados = useCallback(async () => {
     if (!user) {
@@ -93,11 +93,20 @@ export default function Index() {
     }, [carregarDados])
   );
 
+  useEffect(() => {
+    const atualizarSaudacao = () => setSaudacao(saudacaoPeloHorario());
+    atualizarSaudacao();
+
+    const intervalo = setInterval(atualizarSaudacao, 60000);
+
+    return () => clearInterval(intervalo);
+  }, []);
+
   return (
     <Scroll style={styles.container}>
       <View style={styles.header}>
         <HeaderSection
-          title={`${saudacaoPeloHorario()}${user ? `, ${user.first_name}` : ''}`}
+          title={`${saudacao}${user ? `, ${user.first_name}` : ''}`}
           subtitle={'Visão Geral'}
         />
       </View>

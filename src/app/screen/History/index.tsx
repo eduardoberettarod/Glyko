@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -197,15 +197,40 @@ export default function History() {
     router.push(`/screen/History/${id}`);
   };
 
+  // Abre um alerta pedindo confirmação antes de apagar, já que a exclusão é definitiva.
+  const confirmarExclusao = () => {
+    if (!user || selectedIds.length === 0) {
+      return;
+    }
+
+    const quantidade = selectedIds.length;
+    const ehPlural = quantidade > 1;
+
+    Alert.alert(
+      ehPlural ? `Excluir ${quantidade} registros?` : 'Excluir registro?',
+      ehPlural
+        ? 'Essas medições serão apagadas permanentemente. Essa ação não pode ser desfeita.'
+        : 'Essa medição será apagada permanentemente. Essa ação não pode ser desfeita.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Excluir', style: 'destructive', onPress: handleDelete },
+      ]
+    );
+  };
+
   // Exclui definitivamente as medições selecionadas, limpa a seleção e recarrega a lista.
   const handleDelete = async () => {
     if (!user || selectedIds.length === 0) {
       return;
     }
 
-    await excluirMedicoes(selectedIds, user.id);
-    setSelectedIds([]);
-    carregarMedicoes();
+    try {
+      await excluirMedicoes(selectedIds, user.id);
+      setSelectedIds([]);
+      carregarMedicoes();
+    } catch (error) {
+      Alert.alert('Não foi possível excluir', 'Tente novamente em instantes.');
+    }
   };
 
   const filteredMeasurements = levelFilter
@@ -232,7 +257,7 @@ export default function History() {
           <SelectionBar
             selectedCount={selectedIds.length}
             onCancel={() => setSelectedIds([])}
-            onDelete={handleDelete}
+            onDelete={confirmarExclusao}
           />
         ) : null
       }

@@ -18,8 +18,19 @@ import { GlucoseMeasurement } from '@/components/PieChart';
 import { useAuth } from '@/contexts/AuthContext';
 import { buscarMetricasDoDia, listarMedicoes } from '@/database/glucose_measurements';
 
-const UMA_HORA_EM_MS = 60 * 60 * 1000;
-const VINTE_QUATRO_HORAS_EM_MS = 24 * UMA_HORA_EM_MS;
+// Mesmo critério de "dia" usado por buscarMetricasDoDia no banco
+// (date(measured_at) = date('now')): o SQLite compara em UTC, então
+// usamos getUTC* aqui para o gráfico bater exatamente com o painel.
+function mesmoDiaDoBanco(dataISO: string) {
+  const medido = new Date(dataISO);
+  const agora = new Date();
+
+  return (
+    medido.getUTCFullYear() === agora.getUTCFullYear() &&
+    medido.getUTCMonth() === agora.getUTCMonth() &&
+    medido.getUTCDate() === agora.getUTCDate()
+  );
+}
 
 // Converte a classificação salva no banco (low/normal/high) para o
 // formato usado internamente pelo PieChart (baixa/normal/alta).
@@ -74,14 +85,12 @@ export default function Index() {
 
     setMetricas(metricasDoDia);
 
-    const agora = Date.now();
-    const medicoesDasUltimas24h = todasAsMedicoes.filter((medicao) => {
-      const medidoEm = new Date(medicao.measured_at).getTime();
-      return agora - medidoEm <= VINTE_QUATRO_HORAS_EM_MS;
-    });
+    const medicoesDeHoje = todasAsMedicoes.filter((medicao) =>
+      mesmoDiaDoBanco(medicao.measured_at)
+    );
 
     setMeasurements(
-      medicoesDasUltimas24h.map((medicao) => ({
+      medicoesDeHoje.map((medicao) => ({
         status: classificacaoParaStatusDoPieChart(medicao.classification),
       }))
     );
@@ -114,7 +123,6 @@ export default function Index() {
       <View style={styles.chart}>
         <View style={styles.textChartContainer}>
           <Text style={styles.label}>Hoje</Text>
-          <Text style={styles.label}>Últimas 24h</Text>
         </View>
         <PieChart measurements={measurements} />
       </View>

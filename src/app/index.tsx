@@ -57,8 +57,8 @@ export default function Index() {
 
           <Button
             title={'Login'}
-            borderColor={colors.gray[700]}
-            colorText={colors.gray[700]}
+            borderColor={colors.emerald[500]}
+            colorText={colors.emerald[500]}
             onPress={() => router.push('/Login')}
           />
         </View>

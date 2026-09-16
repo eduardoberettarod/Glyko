@@ -28,7 +28,7 @@ const TOPICOS: Topico[] = [
   {
     titulo: 'Agradecimentos',
     paragrafos: [
-      'Este projeto não seria possível sem o apoio de colegas de sala, professores, amigos e familiares, que acompanharam de perto cada etapa do seu desenvolvimento. Meu sincero agradecimento a todos vocês.',
+      'Este projeto não seria possível sem o apoio de colegas de sala, professores, amigos e familiares, que acompanharam de perto cada etapa do meu desenvolvimento. Meu sincero agradecimento a todos vocês.',
     ],
   },
 ];

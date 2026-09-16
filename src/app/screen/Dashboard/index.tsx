@@ -131,7 +131,7 @@ export default function Index() {
 
       <Alert
         icon={'history'}
-        title={'Revisar Histórico'}
+        title={'Lembrete'}
         text={'Verifique as medições dos últimos 30 dias'}
       />
 

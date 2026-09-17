@@ -113,7 +113,7 @@ export const styles = StyleSheet.create({
   },
 
   notes: {
-    marginTop: 24,
+    marginTop: 32,
   },
   notesLabel: {
     color: colors.gray[400],
